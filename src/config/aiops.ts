@@ -1,0 +1,35 @@
+export const aiops = {
+  id: "aiops-agent",
+  url: "/projects/aiops-agent",
+  title: "Autonomous AIOps Agent",
+  subtitle: "Intelligent Kubernetes Diagnostics",
+  category: "Agentic AI · Kubernetes",
+  description: "An AI-powered Kubernetes diagnostic system using LangGraph, FastAPI, and read-only cluster tools to investigate infrastructure problems through evidence-grounded reasoning.",
+  technologies: ["LangGraph", "FastAPI", "Kubernetes", "Python", "RBAC"],
+  repository: undefined as string | undefined,
+  purpose: "An operator asks a question about a Kubernetes workload. The agent chooses which cluster records to read, follows up on what it finds, and returns a diagnosis through an authenticated API.",
+  problem: "A Pod’s status can tell an operator that a container is restarting. The reason may be in the previous container’s logs, a Kubernetes Event, or a resource limit. Investigating by hand means moving between APIs and matching records to the same Pod and container. The engineering challenge is to bring those observations together while keeping a suspected cause distinct from a confirmed symptom.",
+  steps: [
+    ["Submit a question", "The operator sends a bearer token and a diagnostic request to POST /agent/investigate."],
+    ["Check namespace access", "FastAPI resolves the operator’s identity and checks the requested namespace against application permissions."],
+    ["Select a tool", "LangGraph routes the model’s tool calls to the diagnostic tools and passes along the authorization context."],
+    ["Read cluster evidence", "The selected collector queries Kubernetes using the agent’s ServiceAccount. The API server evaluates its RBAC permissions."],
+    ["Interpret the results", "Tool results join the message history. The model can request another observation or produce its final answer."],
+    ["Return the diagnosis", "FastAPI returns the answer, investigation ID, status, and metadata about the tools used."],
+  ],
+  decisions: [
+    ["Agent orchestration", "A two-node LangGraph workflow keeps the question, tool calls, and results in message state. Conditional routing sends a tool call to the tools node and feeds its result back to the agent. A graph step limit bounds the loop."],
+    ["Kubernetes integration", "Read-only collectors expose Pod details, current and previous container logs, Events, and Pod resource metrics when the metrics API is available. Log collection bounds the amount read from each stream and reports missing evidence."],
+    ["Security architecture", "The application checks which namespaces the operator may investigate. Separately, a Kubernetes RoleBinding grants the agent’s ServiceAccount specific read operations on Pods, logs, Events, and metrics. Permission at one layer cannot override a denial at the other."],
+    ["Backend reliability", "FastAPI gives each investigation an ID that links its response to operational logs. The route handles access denials, graph limits, and unexpected failures explicitly. GitHub Actions runs offline tests for graph routing, API responses, authorization, and Helm templates."],
+  ],
+  demo: [
+    ["Observed Pod state", "Inspect the waiting reason, restart count, and last termination state. CrashLoopBackOff describes the delay between restart attempts."],
+    ["Logs and Kubernetes Events", "Read the previous container’s logs alongside Pod Events. The lab container prints a database connection error and deliberately exits with code 1."],
+    ["Diagnostic interpretation", "The manifest explains the repeated failure in this scenario. A database error in a log, on its own, would leave the availability of an actual database an open question."],
+  ],
+  stack: [
+    ["AI", "LangGraph, LangChain"], ["Backend", "Python, FastAPI"], ["Infrastructure", "Kubernetes, Kind, Helm"],
+    ["Security", "API authorization, Kubernetes RBAC"], ["Engineering", "Python unittest, GitHub Actions"],
+  ],
+};
