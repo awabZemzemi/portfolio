@@ -31,21 +31,13 @@ export function ProjectBoard({ items }: { items: Project[] }) {
   if (!items.length) return null;
   return (
     <section id="projects" data-nav-section aria-labelledby="projects-title" className="content-section">
+      <p className="section-kicker mono-label">Case studies</p>
       <SectionHeading id="projects-title">Selected projects</SectionHeading>
       <ul className="project-board">{items.map(item => (
         <li key={item.id}>
           {item.category && <div className="project-category mono-label">{item.id === "aiops-agent" && <ChessAccent piece="rook" />}
             {item.id === "second-brain" && <ChessAccent piece="knight" />}
             {item.category}</div>}
-          {item.id === "aiops-agent" && <svg className="card-circuit" viewBox="0 0 140 38" aria-hidden="true">
-            <g stroke="currentColor" fill="none"><path d="M13 14h39m23 0h47M119 23v9H61V21" /><rect x="2" y="8" width="13" height="13" rx="2" /><rect x="52" y="5" width="22" height="19" rx="3" /><path d="m120 4 11 6v12l-11 6-11-6V10Z" /></g>
-            <path d="M58 11h10v7H58z" fill="currentColor" />
-          </svg>}
-          {item.id === "second-brain" && <svg className="card-circuit" viewBox="0 0 140 38" aria-hidden="true">
-            <g stroke="currentColor" fill="var(--color-surface)"><path d="M8 19 44 8 80 21 125 9M8 19l42 12 30-10" fill="none" />
-              <circle cx="8" cy="19" r="4" /><circle cx="44" cy="8" r="5" /><circle cx="50" cy="31" r="4" /><circle cx="80" cy="21" r="7" /><circle cx="125" cy="9" r="4" />
-            </g>
-          </svg>}
           <h3>
             {item.url?.startsWith("/") && !item.url.startsWith("//") ? (
               <Link href={item.url}>{item.title}<ChevronRight size={16} aria-hidden="true" /></Link>
@@ -65,13 +57,17 @@ function TimelineGroup({ title, items, professional = false }: { title: string; 
   if (!items.length) return null;
   return (
     <div>
-      <h3 className="mono-label mb-4 text-sage">{title}</h3>
+      <h3 className="timeline-group-title mono-label">{title}</h3>
       <ol className={professional ? "timeline professional-timeline" : "timeline"}>{items.map(item => (
         <li key={item.id}>
           {professional && <ChessAccent piece="pawn" />}
-          <h4>{item.organization}</h4>
-          <p className="timeline-role">{item.role}</p>
-          <p className="timeline-meta"><span>{item.period}</span><span>{item.location}</span></p>
+          <div className="timeline-header">
+            <div>
+              <h4>{item.organization}</h4>
+              <p className="timeline-role">{item.role}</p>
+            </div>
+            <p className="timeline-meta"><span>{item.period}</span><span>{item.location}</span></p>
+          </div>
           {item.highlights?.length ? (
             <ul className="timeline-highlights">{item.highlights.map(highlight => <li key={highlight}>{highlight}</li>)}</ul>
           ) : null}

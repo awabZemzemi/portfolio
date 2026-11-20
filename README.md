@@ -1,6 +1,6 @@
 # Awab Zemzemi · Engineering portfolio
 
-A portfolio with two project case studies built with the Next.js App Router, TypeScript, Tailwind CSS, Motion, and Lucide. The homepage is prerendered at build time. Geist Sans and Geist Mono are served locally.
+A portfolio with two project case studies built with the Next.js App Router, TypeScript, Tailwind CSS, Motion, and Lucide. The homepage is prerendered at build time. Next.js fetches IBM Plex Sans and IBM Plex Mono at build time and serves them with the site.
 
 ## Run locally
 

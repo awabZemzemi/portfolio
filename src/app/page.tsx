@@ -1,6 +1,6 @@
 import { statSync } from "node:fs";
 import path from "node:path";
-import { Download, Folders } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 import { HeroGeometry } from "@/components/hero-geometry";
 import { Brand } from "@/components/brand";
 import { About, Contact, ExperienceTimeline, ProjectBoard } from "@/components/content-sections";
@@ -25,7 +25,7 @@ export default function Home() {
             <div className="hero-introduction">
               <p className="intro">{profile.introduction}</p>
               <div className="hero-actions flex flex-wrap gap-3">
-                <a className="button primary" href={workTarget}><Folders size={17} aria-hidden="true" />Explore Work</a>
+                <a className="editorial-link" href={workTarget}>Explore selected work<ArrowRight size={17} aria-hidden="true" /></a>
                 {cv && <a className="button secondary" href={cv} download><Download size={17} aria-hidden="true" />Download CV</a>}
               </div>
               <HeroGeometry />
