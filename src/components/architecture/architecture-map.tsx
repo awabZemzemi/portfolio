@@ -1,3 +1,4 @@
+import { RouteSignal, StoreNotation } from "./diagram-marks";
 import { flows, type Box, type Diagram, type Edge, type Layout, type Node } from "./model";
 
 function connection(edge: Edge, layout: Layout): { path: string; x: number; y: number; anchor: "start" | "middle" | "end" } {
@@ -32,11 +33,11 @@ function connection(edge: Edge, layout: Layout): { path: string; x: number; y: n
   };
 }
 
-function ArchitectureNode({ node, box, active }: { node: Node; box: Box; active: boolean }) {
+function ArchitectureNode({ node, box }: { node: Node; box: Box }) {
   const [x, y, width, height] = box;
   const textX = node.kind === "client" ? 12 : 14;
   return (
-    <g transform={`translate(${x} ${y})`} className={`architecture-node node-${node.kind}`} data-active={active}>
+    <g transform={`translate(${x} ${y})`} className={`architecture-node node-${node.kind}`} data-diagram-node={node.id} data-policy-node={node.boundary}>
       {node.kind === "store" ? (
         <>
           <path className="architecture-node-shape" d={`M0 8 Q0 0 ${width / 2} 0 T${width} 8 V${height - 8} Q${width} ${height} ${width / 2} ${height} T0 ${height - 8} Z`} />
@@ -48,6 +49,7 @@ function ArchitectureNode({ node, box, active }: { node: Node; box: Box; active:
         <rect className="architecture-node-shape" width={width} height={height} />
       )}
       {node.kind === "service" && <path className="architecture-service-rail" d={`M3 0 V${height}`} />}
+      {node.mark && <StoreNotation mark={node.mark} x={width - 28} />}
       <text className="architecture-node-title" x={textX} y={node.kind === "store" ? 35 : 27}>{node.title}</text>
       {node.details.map((line, index) => (
         <text
@@ -63,16 +65,12 @@ function ArchitectureNode({ node, box, active }: { node: Node; box: Box; active:
   );
 }
 
-export function ArchitectureMap({ diagram, active, mapId }: {
-  diagram: Diagram;
-  active: Diagram["steps"][number] | undefined;
-  mapId: string;
-}) {
-  return <div className="architecture-viewport" id={mapId}>
+export function ArchitectureMap({ diagram }: { diagram: Diagram }) {
+  return <>
     {Object.entries(diagram.layouts).map(([variant, layout]) => {
-      const prefix = `${mapId}-${variant}`;
+      const prefix = `${diagram.id}-${variant}`;
       return (
-        <svg className={`architecture-canvas architecture-${variant}`} viewBox={`0 0 ${layout.size.join(" ")}`} aria-hidden="true" key={variant}>
+        <svg className={`architecture-canvas architecture-${variant}`} data-layout={variant} viewBox={`0 0 ${layout.size.join(" ")}`} aria-hidden="true" key={variant}>
           <defs>
             {Array.from(new Set(diagram.edges.map(edge => edge.flow))).map(flow => (
               <marker key={flow} id={`${prefix}-${flow}`} viewBox="0 0 8 8" refX="8" refY="4" markerWidth="6" markerHeight="6" orient="auto">
@@ -95,10 +93,8 @@ export function ArchitectureMap({ diagram, active, mapId }: {
           {diagram.edges.map(edge => {
             const { path, x, y, anchor } = connection(edge, layout);
             const flow = flows[edge.flow];
-            const selected = active?.edges?.includes(edge.id);
-            return <g key={edge.id} className="architecture-edge" data-active={Boolean(selected)}>
-              <path d={path} stroke={flow.color} strokeDasharray={"dashed" in flow ? "4 4" : undefined} markerEnd={`url(#${prefix}-${edge.flow})`} />
-              {selected && <path d={path} pathLength={100} className="architecture-signal" stroke={flow.color} />}
+            return <g key={edge.id} className="architecture-edge" data-diagram-edge={edge.id} data-from={edge.from} data-to={edge.to} data-signal-shape-override={edge.signal} data-signal-color={edge.signalColor ?? flow.color}>
+              <path data-edge-path="" d={path} stroke={flow.color} strokeDasharray={"dashed" in flow ? "4 4" : undefined} markerEnd={`url(#${prefix}-${edge.flow})`} />
               {edge.label && !layout.hiddenLabels?.includes(edge.id) &&
                 <text x={x} y={y} textAnchor={anchor} className="architecture-label">{edge.label}</text>}
             </g>;
@@ -107,10 +103,13 @@ export function ArchitectureMap({ diagram, active, mapId }: {
             key={node.id}
             node={node}
             box={layout.boxes[node.id]}
-            active={Boolean(active?.nodes.includes(node.id))}
           />)}
+          <g className="architecture-signals">
+            <RouteSignal />
+            {diagram.steps.some(step => step.together) && <RouteSignal />}
+          </g>
         </svg>
       );
     })}
-  </div>;
+  </>;
 }

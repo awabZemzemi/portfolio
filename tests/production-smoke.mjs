@@ -30,14 +30,16 @@ try {
 
   const pages = [
     ["/", ["Awab Zemzemi", "/projects/aiops-agent", "/projects/second-brain", 'href="/cv.pdf"', "mailto:awab.zemzemi@insat.ucar.tn"]],
-    ["/projects/aiops-agent", ["Autonomous AIOps Agent", "Human interpretation", "CrashLoopBackOff", "Next step", "Back one step"]],
-    ["/projects/second-brain", ["Second Brain", "Follow the note ID", "31 question", "GraphRAG question answering"]],
+    ["/projects/aiops-agent", ["Autonomous AIOps Agent", "Human interpretation", "CrashLoopBackOff", "Conceptual execution sequence", "data-edge-path"]],
+    ["/projects/second-brain", ["Second Brain", "Follow the note ID", "31 question", "GraphRAG question answering", "Conceptual execution sequence"]],
+    ["/projects/sentinelml", ["SentinelML", "0.875", "0.678", "72%", "1,496,754", "Online transaction inference", "Training, tracking, and packaging", "Reported offline evaluation"]],
   ];
 
   for (const [path, markers] of pages) {
     const response = await fetch(base + path);
     assert.equal(response.status, 200, path);
     const html = await response.text();
+    assert.ok(!html.includes("architecture-controls"), `${path} should omit video controls`);
     for (const marker of ["<title>", 'name="description"', 'property="og:title"', ...markers]) {
       assert.ok(html.includes(marker), `${path} should contain ${marker}`);
     }
@@ -51,7 +53,7 @@ try {
   for (const path of ["/icon.svg", "/robots.txt", "/sitemap.xml"]) {
     assert.equal((await fetch(base + path)).status, 200, path);
   }
-  console.log("Production smoke tests passed for the three pages, CV, favicon, robots, and sitemap.");
+  console.log("Production smoke tests passed for all four pages, CV, favicon, robots, and sitemap.");
 } finally {
   child.kill();
   await exited;

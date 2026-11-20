@@ -1,15 +1,22 @@
 import { secondBrain } from "./second-brain";
 import { aiops } from "./aiops";
+import { sentinelml } from "./sentinelml";
 
 export interface Project {
   id: string;
   title: string;
   description: string;
-  url?: string;
-  category?: string;
-  technologies?: string[];
-  preview?: string[];
+  url: string;
+  category: string;
+  technologies: string[];
+  piece: "rook" | "knight" | "pawn";
+  preview: ProjectPreview;
 }
+
+type FlowNode = { title: string; detail: string };
+export type ProjectPreview =
+  | { kind: "flow"; title: string; nodes: [FlowNode, FlowNode, FlowNode, FlowNode] }
+  | { kind: "knowledge-graph"; title: string };
 
 export interface Experience {
   id: string;
@@ -48,7 +55,56 @@ export const links: PersonalLinks = {
   cv: "/cv.pdf",
 };
 
-export const projects: Project[] = [aiops, secondBrain];
+export const projects: Project[] = [
+  {
+    id: aiops.id,
+    url: aiops.url,
+    title: aiops.title,
+    category: "Infrastructure diagnostics",
+    description: "Investigates Kubernetes failures with a LangGraph tool loop, read-only evidence collection, and namespace-scoped access.",
+    technologies: ["Kubernetes", "LangGraph", "FastAPI", "RBAC"],
+    piece: "rook",
+    preview: {
+      kind: "flow",
+      title: "Investigation flow",
+      nodes: [
+        { title: "FastAPI", detail: "Authorize namespace" },
+        { title: "LangGraph", detail: "Select a tool" },
+        { title: "Diagnostic tools", detail: "Collect evidence" },
+        { title: "Kubernetes", detail: "Enforce read-only RBAC" },
+      ],
+    },
+  },
+  {
+    id: secondBrain.id,
+    url: secondBrain.url,
+    title: "Second Brain",
+    category: "Knowledge retrieval",
+    description: "Retrieves related note passages and explicit relationships. LangGraph combines both sources into context for the answer.",
+    technologies: ["GraphRAG", "LangGraph", "Neo4j", "ChromaDB"],
+    piece: "knight",
+    preview: { kind: "knowledge-graph", title: "Knowledge graph schema" },
+  },
+  {
+    id: sentinelml.id,
+    url: sentinelml.url,
+    title: sentinelml.title,
+    category: "Machine learning · Streaming",
+    description: "Streams transactions through Kafka, scores anomalies with Isolation Forest, and tracks model experiments in MLflow.",
+    technologies: ["Kafka", "Isolation Forest", "MLflow", "Jenkins"],
+    piece: "pawn",
+    preview: {
+      kind: "flow",
+      title: "Transaction scoring pipeline",
+      nodes: [
+        { title: "Transactions", detail: "Dataset replay" },
+        { title: "Kafka", detail: "Raw event stream" },
+        { title: "Features", detail: "Process and publish" },
+        { title: "Inference", detail: "Score → predictions" },
+      ],
+    },
+  },
+];
 
 export const experience: Experience[] = [
   {

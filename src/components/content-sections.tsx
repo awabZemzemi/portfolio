@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, ChessKnight, ChessPawn, ChessRook, ChevronRight, Download, ExternalLink, Mail } from "lucide-react";
+import { ArrowRight, ChessKnight, ChessPawn, ChessRook, Download, ExternalLink, Mail } from "lucide-react";
 import { type Experience, type Project, links, profile } from "@/config/portfolio";
+import { ProjectDiagram } from "./project-diagram";
+import "./project-board.css";
 
 const chessPieces = { rook: ChessRook, knight: ChessKnight, pawn: ChessPawn };
 
@@ -27,42 +29,38 @@ export function About() {
   );
 }
 
-export function ProjectBoard({ items }: { items: Project[] }) {
+export function ProjectBoard({ items }: { items: readonly Project[] }) {
   if (!items.length) return null;
   return (
     <section id="projects" data-nav-section aria-labelledby="projects-title" className="content-section">
       <p className="section-kicker mono-label">Case studies</p>
       <SectionHeading id="projects-title">Selected projects</SectionHeading>
-      <ul className="project-board" role="list">{items.map(item => (
-        <li key={item.id}>
-          <div className="project-entry">
-            {item.category && <div className="project-category mono-label">
-              {item.id === "aiops-agent" && <ChessAccent piece="rook" />}
-              {item.id === "second-brain" && <ChessAccent piece="knight" />}
-              {item.category}
-            </div>}
-            <h3>
-              {item.url?.startsWith("/") && !item.url.startsWith("//") ? (
-                <Link href={item.url}>{item.title}<ChevronRight size={19} aria-hidden="true" /></Link>
-              ) : item.url ? (
-                <a href={item.url}>{item.title}<ExternalLink size={16} aria-hidden="true" /></a>
-              ) : item.title}
-            </h3>
-            <p>{item.description}</p>
-            {item.technologies && <p className="project-tech">{item.technologies.join(" · ")}</p>}
-          </div>
-          {item.preview && (
-            <div className="project-preview">
-              <p className="mono-label">Architecture preview</p>
-              <ol aria-label={`${item.title} architecture summary`} role="list">
-                {item.preview.map((node, index, nodes) => (
-                  <li key={node}><span>{node}</span>{index < nodes.length - 1 && <ArrowRight size={15} aria-hidden="true" />}</li>
-                ))}
-              </ol>
-            </div>
-          )}
-        </li>
-      ))}</ul>
+      <ul className="project-board" role="list">{items.map(item => {
+        const internal = item.url.startsWith("/") && !item.url.startsWith("//");
+        const ProjectLink = internal ? Link : "a";
+        const Icon = internal ? ArrowRight : ExternalLink;
+        const titleId = `project-title-${item.id}`;
+        const actionId = `project-action-${item.id}`;
+
+        return (
+          <li key={item.id}>
+            <ProjectLink className="project-pair" href={item.url} aria-labelledby={`${actionId} ${titleId}`}>
+              <div className="project-entry">
+                <p className="project-category mono-label"><ChessAccent piece={item.piece} />{item.category}</p>
+                <div>
+                  <h3 id={titleId}>{item.title}</h3>
+                  <p className="project-description">{item.description}</p>
+                  <p className="project-tech">{item.technologies.join(" · ")}</p>
+                </div>
+                <span className="project-action" id={actionId}>
+                  {internal ? "Read case study" : "View project"}<Icon size={18} aria-hidden="true" />
+                </span>
+              </div>
+              <ProjectDiagram projectId={item.id} preview={item.preview} />
+            </ProjectLink>
+          </li>
+        );
+      })}</ul>
     </section>
   );
 }

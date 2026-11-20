@@ -1,3 +1,4 @@
+import { StudyReveal } from "./study-reveal";
 import capture from "../../docs/aiops-demo/evidence.json";
 
 export function AiopsEvidence() {
@@ -20,7 +21,7 @@ export function AiopsEvidence() {
         The diagnostic CLI collected this snapshot from <code>{namespace}/{pod}</code>, a deliberately failing Pod.
         The request below is an example. The interpretation comes from reviewing the manifest and collector output.
       </p>
-      <div className="evidence-grid">
+      <StudyReveal className="evidence-grid">
         <div className="evidence-facts">
           <p className="mono-label section-kicker">Observed Pod state</p>
           <p className="evidence-reason"><code>{container.state.reason}</code></p>
@@ -40,7 +41,7 @@ export function AiopsEvidence() {
           </ul>
           <p className="evidence-note">{result.summary}</p>
         </div>
-      </div>
+      </StudyReveal>
       <div className="evidence-interpretation">
         <h3>Human interpretation</h3>
         <p>{interpretation.summary}</p>

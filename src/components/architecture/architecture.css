@@ -52,18 +52,27 @@
 .architecture-node[data-active="true"] .architecture-node-shape { fill: #304135; stroke: var(--color-gold); stroke-width: 2; }
 .architecture-edge > path { fill: none; stroke-width: 1.35; opacity: .78; }
 .architecture-edge[data-active="true"] > path { stroke-width: 2.2; opacity: 1; }
-.architecture-edge > .architecture-signal {
-  stroke-width: 3.5;
-  stroke-linecap: round;
-  stroke-dasharray: 10 90;
-  animation: architecture-signal var(--architecture-step-duration) linear both;
-  animation-play-state: paused;
+.architecture-node-shape { transition: stroke .14s ease-out, fill .14s ease-out; }
+.architecture-store-mark {
+  color: var(--color-sage);
+  stroke: currentColor;
+  stroke-width: 1.2;
+  fill: none;
+  opacity: .72;
 }
-.architecture-player[data-playing="true"] .architecture-signal { animation-play-state: running; }
-@keyframes architecture-signal {
-  from { stroke-dashoffset: 100; }
-  to { stroke-dashoffset: 0; }
-}
+.architecture-store-mark circle { fill: var(--color-surface); }
+.architecture-node[data-active="true"] .architecture-store-mark { color: var(--color-gold); opacity: 1; }
+.architecture-node[data-active="true"] .architecture-store-mark circle { fill: var(--color-gold); }
+.architecture-signal { visibility: hidden; pointer-events: none; }
+.architecture-viewport[data-motion="visible"] .architecture-signal[data-active="true"] { visibility: visible; }
+.architecture-signal [data-signal-shape] { display: none; }
+.architecture-signal[data-shape="packet"] [data-signal-shape="packet"],
+.architecture-signal[data-shape="note"] [data-signal-shape="note"],
+.architecture-signal[data-shape="vector"] [data-signal-shape="vector"],
+.architecture-signal[data-shape="relations"] [data-signal-shape="relations"],
+.architecture-signal[data-shape="passages"] [data-signal-shape="passages"] { display: inline; }
+.architecture-signal path { stroke: #121713; stroke-width: 1; fill: none; }
+.architecture-signal circle[data-signal-shape="packet"] { stroke: #121713; stroke-width: 1; }
 
 .architecture-legend {
   display: flex;
@@ -75,45 +84,13 @@
 }
 .architecture-legend li { display: flex; align-items: center; gap: .45rem; }
 .architecture-legend i { width: 1.35rem; border-top-width: 2px; }
-.architecture-playback {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: .7rem 1.3rem;
-  padding: .65rem clamp(.9rem, 2.3vw, 1.7rem);
-  border-block: 1px solid var(--color-edge);
-}
-.architecture-controls { display: flex; flex-wrap: wrap; gap: .5rem .65rem; }
-.architecture-control-set { display: flex; gap: .4rem; }
-.architecture-controls button {
-  display: inline-flex;
-  align-items: center;
-  gap: .38rem;
-  min-height: 44px;
-  padding: .35rem .7rem;
-  border: 1px solid #596b5d;
-  border-radius: 2px;
-  color: var(--color-paper);
-  background: #202a22;
-  font-size: .875rem;
-}
-.architecture-controls button:not([aria-disabled="true"]):hover { border-color: var(--color-sage); background: #28372c; cursor: pointer; }
-.architecture-controls button[aria-disabled="true"] { color: var(--color-muted); background: transparent; border-color: var(--color-edge); }
-.architecture-status {
-  flex: 1 1 30ch;
-  min-block-size: 3.3em;
-  align-content: center;
-  color: var(--color-secondary);
-  font-size: .9rem;
-  line-height: 1.55;
-}
-.architecture-status span { margin-inline-end: .35rem; color: var(--color-gold); font: .76rem var(--font-mono), monospace; }
-@media (max-width: 620px) {
-  .architecture-status { flex-basis: 100%; min-block-size: 4.65em; }
-}
 @media (prefers-reduced-motion: reduce) {
-  .architecture-signal { display: none; animation: none; }
+  .architecture-signals { display: none; }
+  .architecture-node-shape { transition: none; }
 }
 
-.architecture-player[data-mode="paused"] .architecture-signal,
-.architecture-player[data-mode="complete"] .architecture-signal { opacity: 0; }
+.architecture-caption { color: var(--color-muted); margin-bottom: .4rem; }
+.architecture-viewport[data-inspect="application"] [data-policy-node="application"] .architecture-node-detail,
+.architecture-viewport[data-inspect="kubernetes"] [data-policy-node="kubernetes"] .architecture-node-detail {
+  fill: var(--color-gold);
+}
