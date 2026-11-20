@@ -67,7 +67,6 @@ src/
     content-sections.tsx   About, project board, timeline, and contact
     architecture/          Responsive SVG diagrams and viewport-triggered motion
     navigation.tsx         Section navigation and mobile disclosure
-    workflow.tsx           Design, build, deploy, and observe stages
   config/
     portfolio.ts           Profile, optional links, projects, and experience
 ```

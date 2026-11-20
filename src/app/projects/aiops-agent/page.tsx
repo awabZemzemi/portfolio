@@ -8,6 +8,7 @@ import { aiops } from "@/config/aiops";
 import { siteOrigin } from "@/config/site";
 import { education, experience, profile } from "@/config/portfolio";
 import "../study.css";
+import "./aiops.css";
 
 const title = `${aiops.title} — ${profile.name}`;
 export const metadata: Metadata = {
@@ -23,15 +24,23 @@ export default function AiopsStudy() {
     <>
       <a className="skip-link" href="#main">Skip to content</a>
       <Navigation hasProjects hasExperience={Boolean(experience.length || education.length)} projectPage />
-      <main id="main" className="shell study" tabIndex={-1}>
+      <main id="main" className="shell study aiops-study" tabIndex={-1}>
         <StudyOverview
           title={aiops.title}
           category={aiops.category}
           objective={aiops.purpose}
+          objectiveLabel="Project purpose"
+          status="Ongoing"
           technologies={aiops.technologies}
           contribution={aiops.contribution}
           repository={aiops.repository}
-        />
+        >
+          <div className="aiops-overview-evidence" aria-label="Engineering evidence">
+            <div><p className="mono-label">Offline tests</p><p><strong>127 passed</strong> in the audited local run</p></div>
+            <div><p className="mono-label">Access controls</p><p>API namespace authorization and Kubernetes RBAC</p></div>
+            <div><p className="mono-label">Kind validation</p><p>Live collector test on a failing lab workload</p></div>
+          </div>
+        </StudyOverview>
         <section className="section-row"><h2>The engineering problem</h2><p className="section-copy">{aiops.problem}</p></section>
         <AiopsArchitecture />
         <AiopsEvidence />

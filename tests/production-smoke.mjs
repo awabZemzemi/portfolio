@@ -29,10 +29,10 @@ try {
   });
 
   const pages = [
-    ["/", ["Awab Zemzemi", "/projects/aiops-agent", "/projects/second-brain", 'href="/cv.pdf"', "mailto:awab.zemzemi@insat.ucar.tn"]],
+    ["/", ["Awab Zemzemi", "/projects/aiops-agent", "/projects/second-brain", "/projects/sentinelml", 'href="/cv.pdf"', "mailto:awab.zemzemi@insat.ucar.tn"]],
     ["/projects/aiops-agent", ["Autonomous AIOps Agent", "Human interpretation", "CrashLoopBackOff", "Conceptual execution sequence", "data-edge-path"]],
     ["/projects/second-brain", ["Second Brain", "Follow the note ID", "31 question", "GraphRAG question answering", "Conceptual execution sequence"]],
-    ["/projects/sentinelml", ["SentinelML", "0.875", "0.678", "72%", "1,496,754", "Online transaction inference", "Training, tracking, and packaging", "Reported offline evaluation"]],
+    ["/projects/sentinelml", ["SentinelML", "0.875", "0.678", "72%", "1,496,754", "Offline Training", "Online Transaction Inference", "One project, two connected pipelines", "Saved notebook output", "https://github.com/SentineMl/MLOps", "https://github.com/SentineMl/SentinelML"]],
   ];
 
   for (const [path, markers] of pages) {

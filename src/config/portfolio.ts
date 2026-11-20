@@ -39,8 +39,6 @@ interface PersonalLinks {
 export const profile = {
   name: "Awab Zemzemi",
   eyebrow: "AI engineering · Software systems",
-  internship: "Final-year internship",
-  internshipTiming: "Around February 2027 · 4–6 months",
   introduction: "I’m a final-year engineering student at INSAT. I build AI agents, retrieval systems, and the Python services and infrastructure that run them.",
   about: [
     "I study Computer Networks and Telecommunications at INSAT and build AI agents and LLM applications. My work connects retrieval and model inference with the backend services that make them usable.",
@@ -61,8 +59,8 @@ export const projects: Project[] = [
     url: aiops.url,
     title: aiops.title,
     category: "Infrastructure diagnostics",
-    description: "Investigates Kubernetes failures with a LangGraph tool loop, read-only evidence collection, and namespace-scoped access.",
-    technologies: ["Kubernetes", "LangGraph", "FastAPI", "RBAC"],
+    description: "Investigates Kubernetes failures using LangGraph, restricted diagnostic tools, and namespace-scoped authorization.",
+    technologies: ["LangGraph", "FastAPI", "Kubernetes", "RBAC"],
     piece: "rook",
     preview: {
       kind: "flow",
@@ -80,8 +78,8 @@ export const projects: Project[] = [
     url: secondBrain.url,
     title: "Second Brain",
     category: "Knowledge retrieval",
-    description: "Retrieves related note passages and explicit relationships. LangGraph combines both sources into context for the answer.",
-    technologies: ["GraphRAG", "LangGraph", "Neo4j", "ChromaDB"],
+    description: "Combines semantic search and knowledge-graph relationships through LangGraph to answer questions across personal notes.",
+    technologies: ["LangGraph", "Neo4j", "ChromaDB", "LangSmith"],
     piece: "knight",
     preview: { kind: "knowledge-graph", title: "Knowledge graph schema" },
   },
@@ -89,9 +87,9 @@ export const projects: Project[] = [
     id: sentinelml.id,
     url: sentinelml.url,
     title: sentinelml.title,
-    category: "Machine learning · Streaming",
-    description: "Streams transactions through Kafka, scores anomalies with Isolation Forest, and tracks model experiments in MLflow.",
-    technologies: ["Kafka", "Isolation Forest", "MLflow", "Jenkins"],
+    category: "MLOps · Streaming ML",
+    description: "Pairs MLflow-tracked Isolation Forest training with Kafka transaction processing and a registry-backed inference worker.",
+    technologies: ["Kafka", "Python", "MLflow", "Docker", "Jenkins"],
     piece: "pawn",
     preview: {
       kind: "flow",

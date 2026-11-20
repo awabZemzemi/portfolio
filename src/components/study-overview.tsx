@@ -5,13 +5,16 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
 type Source = { label: string; path: string; href: string };
 
-export function StudyOverview({ title, category, objective, technologies, contribution, repository, children }: {
+export function StudyOverview({ title, category, objective, objectiveLabel, status, technologies, contribution, repository, repositories, children }: {
   title: string;
   category: string;
   objective: string;
+  objectiveLabel?: string;
+  status?: string;
   technologies: string[];
   contribution: string;
   repository: string;
+  repositories?: readonly { label: string; href: string }[];
   children?: ReactNode;
 }) {
   return (
@@ -19,8 +22,11 @@ export function StudyOverview({ title, category, objective, technologies, contri
       <Link href="/#projects" className="study-back"><ArrowLeft size={14} aria-hidden="true" />Selected work</Link>
       <div className="study-overview-grid">
         <div>
-          <p className="mono-label section-kicker">{category}</p>
+          {status ? (
+            <div className="study-overview-meta"><p className="mono-label section-kicker">{category}</p><span className="study-status mono-label">{status}</span></div>
+          ) : <p className="mono-label section-kicker">{category}</p>}
           <h1>{title}</h1>
+          {objectiveLabel && <p className="mono-label section-kicker study-objective-label">{objectiveLabel}</p>}
           <p className="study-objective">{objective}</p>
           <ul className="study-technologies" role="list" aria-label="Key technologies">
             {technologies.map(technology => <li key={technology}>{technology}</li>)}
@@ -29,7 +35,11 @@ export function StudyOverview({ title, category, objective, technologies, contri
         <aside className="study-contribution" aria-label="My contribution">
           <p className="mono-label section-kicker">My contribution</p>
           <p>{contribution}</p>
-          <a className="editorial-link" href={repository}>View repository<ArrowUpRight size={16} aria-hidden="true" /></a>
+          {repositories?.length ? (
+            <div className="study-repository-links">
+              {repositories.map(({ label, href }) => <a key={href} className="editorial-link" href={href}>{label}<ArrowUpRight size={16} aria-hidden="true" /></a>)}
+            </div>
+          ) : <a className="editorial-link" href={repository}>View repository<ArrowUpRight size={16} aria-hidden="true" /></a>}
         </aside>
       </div>
       {children}

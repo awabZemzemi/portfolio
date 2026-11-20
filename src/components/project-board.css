@@ -104,6 +104,7 @@
   left: calc(100% + var(--flow-gap) / 2);
   transform: translate(-50%, -50%);
   color: #536b5a;
+  transition: color .2s ease;
 }
 .project-flow-node:nth-child(2) .project-flow-arrow { top: calc(100% + var(--flow-gap) / 2); left: 50%; }
 .project-flow-node:nth-child(3) .project-flow-arrow { left: calc(var(--flow-gap) / -2); }
@@ -111,6 +112,9 @@
 .project-pair:is(:hover, :focus-visible) .project-entry { background: #2d4233; }
 .project-pair:is(:hover, :focus-visible) .project-preview { background: #ebe4d5; }
 .project-pair:is(:hover, :focus-visible) .project-action { text-decoration-color: currentColor; }
+.project-pair:is(:hover, :focus-visible) .project-flow-arrow { color: #304b39; }
+.project-preview .knowledge-graph-connections { transition: stroke .2s ease; }
+.project-pair:is(:hover, :focus-visible) .knowledge-graph-connections { stroke: #304b39; }
 .project-pair:focus-visible { outline: none; }
 .project-pair:focus-visible::after {
   position: absolute;

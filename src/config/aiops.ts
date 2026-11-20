@@ -1,5 +1,6 @@
 const repository = "https://github.com/awabZemzemi/AiOps";
 const revision = "908de7bc865b110278272548dfad24280657fb1b";
+const overview = "An AI-powered Kubernetes diagnostic system that uses LangGraph to investigate infrastructure failures through controlled, read-only tool calls.";
 
 export const aiops = {
   id: "aiops-agent",
@@ -7,11 +8,11 @@ export const aiops = {
   title: "Autonomous AIOps Agent",
   subtitle: "Intelligent Kubernetes Diagnostics",
   category: "Agentic AI · Kubernetes",
-  description: "An AI-powered Kubernetes diagnostic system using LangGraph, FastAPI, and read-only cluster tools to investigate infrastructure problems through evidence-grounded reasoning.",
+  description: overview,
   technologies: ["LangGraph", "FastAPI", "Kubernetes", "Python", "RBAC"],
   repository,
-  contribution: "I built the investigation backend, the LangGraph tool loop, and the restricted Kubernetes evidence collectors. I also implemented namespace authorization and added tests for the request and deployment boundaries.",
-  purpose: "An operator asks a question about a Kubernetes workload. The agent chooses which cluster records to read, follows up on what it finds, and returns a diagnosis through an authenticated API.",
+  contribution: "I developed the LangGraph investigation workflow, diagnostic collectors, and FastAPI integration, including namespace authorization and restricted Kubernetes access.",
+  purpose: overview,
   problem: "A Pod’s status can tell an operator that a container is restarting. The reason may be in the previous container’s logs, a Kubernetes Event, or a resource limit. Investigating by hand means moving between APIs and matching records to the same Pod and container. The engineering challenge is to bring those observations together while keeping a suspected cause distinct from a confirmed symptom.",
   decisions: [
     ["Two authorization boundaries", "FastAPI checks the operator’s permitted namespaces before collection. Kubernetes independently limits the ServiceAccount to specific read verbs through a RoleBinding. The two checks protect different identities and are configured separately."],

@@ -1,4 +1,12 @@
 .knowledge-graph { width: 100%; max-width: 29rem; justify-self: end; }
+.knowledge-study .study-objective-label { margin: 1.25rem 0 .4rem; }
+.knowledge-overview-evidence { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(2rem, 4vw, 3rem); border-block: 1px solid var(--color-edge); }
+.knowledge-overview-evidence > div { min-width: 0; padding: 1.1rem clamp(.8rem, 2vw, 1.5rem); }
+.knowledge-overview-evidence > div:first-child { padding-left: 0; }
+.knowledge-overview-evidence > div + div { border-left: 1px solid var(--color-edge); }
+.knowledge-overview-evidence .mono-label { margin-bottom: .4rem; color: var(--color-sage); font-size: .7rem; letter-spacing: .04em; text-transform: uppercase; }
+.knowledge-overview-evidence p:last-child { color: var(--color-secondary); font-size: .91rem; line-height: 1.5; }
+.knowledge-overview-evidence strong { color: var(--color-paper); font-weight: 600; }
 .knowledge-graph svg { display: block; width: 100%; }
 .knowledge-graph figcaption { text-align: center; color: var(--color-muted); margin-top: .7rem; }
 .knowledge-architecture > h2 { font-size: clamp(1.8rem, 2.7vw, 2.45rem); line-height: 1.15; font-weight: 500; letter-spacing: -.027em; margin-bottom: 1.25rem; }
@@ -11,7 +19,16 @@
 .retrieval-comparison > div:nth-child(2) { border-color: var(--color-gold); }
 .retrieval-comparison figcaption { grid-column: 1/-1; padding-top: 1rem; border-top: 1px solid var(--color-edge); max-width: 80ch; color: var(--color-secondary); }
 .eval-body .study-stack { margin-block: 1.2rem; }
+.evaluation-flow { margin-top: 1.25rem; padding-left: 1.35rem; color: var(--color-secondary); list-style: decimal; }
+.evaluation-flow li { padding: .2rem 0 .2rem .25rem; }
+.evaluation-flow li::marker { color: var(--color-sage); font-family: var(--font-mono), monospace; }
+.knowledge-mcp-note { margin-top: 1.2rem; max-width: 76ch; }
 .knowledge-study code { font-size: .9em; color: var(--color-paper); }
+@media(max-width: 700px) {
+  .knowledge-overview-evidence { grid-template-columns: minmax(0, 1fr); }
+  .knowledge-overview-evidence > div { padding: .85rem 0; }
+  .knowledge-overview-evidence > div + div { border-left: 0; border-top: 1px solid var(--color-edge); }
+}
 @media(max-width: 760px) {
   .retrieval-comparison { grid-template-columns: 1fr; }
   .knowledge-graph { justify-self: center; max-width: 24rem; }

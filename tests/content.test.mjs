@@ -4,9 +4,9 @@ import { test } from "node:test";
 import { aiopsDiagram } from "../src/components/architecture/aiops-data.ts";
 import { ingestionDiagram, retrievalDiagram } from "../src/components/architecture/knowledge-data.ts";
 import { resolveSiteOrigin } from "../src/config/site.ts";
-import { sentinelOnline, sentinelLifecycle } from "../src/components/architecture/sentinel-data.ts";
+import { sentinelSystem } from "../src/components/architecture/sentinel-data.ts";
 
-for (const diagram of [aiopsDiagram, ingestionDiagram, retrievalDiagram, sentinelOnline, sentinelLifecycle]) {
+for (const diagram of [aiopsDiagram, ingestionDiagram, retrievalDiagram, sentinelSystem]) {
   test(`${diagram.title} has valid layout, edge, and playback references`, () => {
     const ids = diagram.nodes.map(node => node.id);
     const edges = diagram.edges.map(edge => edge.id);
@@ -26,6 +26,14 @@ for (const diagram of [aiopsDiagram, ingestionDiagram, retrievalDiagram, sentine
     }
   });
 }
+
+test("SentinelML connects offline registration to online lookup without a mobile node crossing", () => {
+  assert.deepEqual(sentinelSystem.zones.map(zone => zone.label), ["Offline · MLOps repository", "Online · SentinelML repository"]);
+  const handoff = sentinelSystem.edges.find(edge => edge.id === "lookup");
+  assert.equal(handoff?.from, "registry");
+  assert.equal(handoff?.to, "infer");
+  assert.ok(sentinelSystem.layouts.narrow.routes?.lookup?.path);
+});
 
 test("keeps live Kind data separate from the unsent request and human interpretation", () => {
   const evidence = JSON.parse(readFileSync(new URL("../docs/aiops-demo/evidence.json", import.meta.url), "utf8"));

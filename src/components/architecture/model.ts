@@ -3,6 +3,7 @@ export const flows = {
   features: { label: "Feature vector", color: "#c0a170" },
   prediction: { label: "Prediction event", color: "#9fbea6", dashed: true },
   experiment: { label: "Training data / artifact", color: "#c0a170" },
+  model: { label: "Configured model lookup", color: "#c0a170", dashed: true },
   automation: { label: "Pipeline stage", color: "#aab8a8" },
   request: { label: "Request", color: "#aab8a8" },
   tools: { label: "Tool call", color: "#c0a170" },
@@ -37,6 +38,7 @@ export type Layout = {
   boxes: Record<string, Box>;
   verticalTrack?: number;
   axes?: Record<string, Axis>;
+  routes?: Record<string, { path: string; x: number; y: number; anchor: "start" | "middle" | "end" }>;
   hiddenLabels?: string[];
 };
 export type Diagram = {

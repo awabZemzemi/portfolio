@@ -1,0 +1,17 @@
+.aiops-study .study-overview-meta { display: flex; align-items: center; flex-wrap: wrap; gap: .65rem 1rem; }
+.aiops-study .study-overview-meta .section-kicker { margin: 0; }
+.aiops-study .study-status { display: inline-flex; align-items: center; gap: .45rem; padding: .17rem .5rem; border: 1px solid var(--color-pine); color: var(--color-paper); font-size: .68rem; letter-spacing: .04em; }
+.aiops-study .study-status::before { content: ""; width: .35rem; height: .35rem; border-radius: 50%; background: var(--color-gold); }
+.aiops-study .study-objective-label { margin: 1.25rem 0 .4rem; }
+.aiops-study .aiops-overview-evidence { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(2rem, 4vw, 3rem); border-block: 1px solid var(--color-edge); }
+.aiops-study .aiops-overview-evidence > div { min-width: 0; padding: 1.1rem clamp(.8rem, 2vw, 1.5rem); }
+.aiops-study .aiops-overview-evidence > div:first-child { padding-left: 0; }
+.aiops-study .aiops-overview-evidence > div + div { border-left: 1px solid var(--color-edge); }
+.aiops-study .aiops-overview-evidence .mono-label { margin-bottom: .4rem; color: var(--color-sage); font-size: .7rem; letter-spacing: .04em; text-transform: uppercase; }
+.aiops-study .aiops-overview-evidence p:last-child { color: var(--color-secondary); font-size: .91rem; line-height: 1.5; }
+.aiops-study .aiops-overview-evidence strong { color: var(--color-paper); font-weight: 600; }
+@media (max-width: 700px) {
+  .aiops-study .aiops-overview-evidence { grid-template-columns: minmax(0, 1fr); }
+  .aiops-study .aiops-overview-evidence > div { padding: .85rem 0; }
+  .aiops-study .aiops-overview-evidence > div + div { border-left: 0; border-top: 1px solid var(--color-edge); }
+}

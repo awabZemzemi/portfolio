@@ -6,7 +6,7 @@ export function KnowledgeGraphDiagram({ markerId }: { markerId: string }) {
           <path d="M0 0L8 4L0 8" fill="var(--knowledge-edge, #aab7a4)" />
         </marker>
       </defs>
-      <g fill="none" stroke="var(--knowledge-edge, #aab7a4)" markerEnd={`url(#${markerId})`}>
+      <g className="knowledge-graph-connections" fill="none" stroke="var(--knowledge-edge, #aab7a4)" markerEnd={`url(#${markerId})`}>
         <path d="M78 51C126 51 107 107 151 107" /><path d="M78 165C126 165 107 114 151 114" /><path d="M210 111H302" />
       </g>
       <g fill="var(--knowledge-node, #29382d)" stroke="var(--knowledge-outline, #7e947e)">

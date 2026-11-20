@@ -21,6 +21,7 @@ export function AiopsEvidence() {
         The diagnostic CLI collected this snapshot from <code>{namespace}/{pod}</code>, a deliberately failing Pod.
         The request below is an example. The interpretation comes from reviewing the manifest and collector output.
       </p>
+      <p className="evidence-note">Captured <time dateTime={snapshot.capturedAt}>20 Nov 2026 at 04:57 UTC</time>. No agent-selected tool trace or model answer was captured.</p>
       <StudyReveal className="evidence-grid">
         <div className="evidence-facts">
           <p className="mono-label section-kicker">Observed Pod state</p>
@@ -70,9 +71,9 @@ export function AiopsValidation() {
     <section className="section-row" aria-labelledby="validation-title">
       <h2 id="validation-title">Validation</h2>
       <div className="study-decisions">
-        <div><h3>Kind integration</h3><p>The opt-in <code>test_crash_demo</code> test {liveIntegration.status} against the existing lab. It verifies that the restricted collector returns a serializable report for the target Pod and includes its container logs.</p></div>
-        <div><h3>Permission checks</h3><p>The lab ServiceAccount could read Pod logs in <code>aiops</code>. Kubernetes denied Pod deletion in that namespace and Pod listing in <code>default</code>.</p></div>
-        <div><h3>Offline suite and CI</h3><p>{offlineSuite.passed} offline tests passed in the audited run, with the live test executed separately. Coverage includes graph routing, authorization, error responses, log redaction, and Helm RBAC templates. GitHub Actions runs the offline checks.</p></div>
+        <div><h3>Offline automated tests</h3><p>{offlineSuite.passed} tests passed in the audited local run. They cover graph routing, API authorization, error responses, log redaction, and Helm RBAC templates with mocked model and cluster dependencies. GitHub Actions is configured to run offline checks.</p></div>
+        <div><h3>Kind integration</h3><p>The separately run, opt-in <code>test_crash_demo</code> test {liveIntegration.status} against the local lab. It confirms that the restricted collector returns a serializable report for the failing Pod, including its container logs.</p></div>
+        <div><h3>Security verification</h3><p>Live access reviews allowed the lab ServiceAccount to read Pod logs in <code>aiops</code>. Kubernetes denied Pod deletion there and Pod listing in <code>default</code>. No deletion was attempted.</p></div>
       </div>
     </section>
   );

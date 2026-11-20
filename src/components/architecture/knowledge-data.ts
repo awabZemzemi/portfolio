@@ -8,7 +8,7 @@ export const ingestionDiagram: Diagram = {
   id: "knowledge-ingestion",
   title: "Knowledge ingestion",
   heading: "h3",
-  description: "React sends the note to FastAPI for LLM processing. The backend stores the original and structured fields in PostgreSQL, indexes the atomic note in ChromaDB, then writes entities and relationships to Neo4j using the same note ID. The gold arrows show the backend’s write order.",
+  description: "React sends the note to FastAPI. One LLM analysis extracts the title, topic, atomic note, entities, and relationships. The backend commits PostgreSQL, then indexes ChromaDB and Neo4j with the same note ID. Gold arrows show the order of backend writes, not store-to-store requests; these writes are not one atomic transaction.",
   nodes: [
     { id: "react", title: "React", details: ["Submit note"], kind: "client" },
     { id: "api", title: "FastAPI", details: ["POST /add-note"], kind: "service" },

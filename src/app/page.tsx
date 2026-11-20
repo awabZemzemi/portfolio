@@ -1,11 +1,10 @@
 import { statSync } from "node:fs";
 import path from "node:path";
 import { ArrowRight, Download, Mail } from "lucide-react";
-import { HeroGeometry } from "@/components/hero-geometry";
 import { Brand } from "@/components/brand";
+import { HeroGeometry } from "@/components/hero-geometry";
 import { About, Contact, ExperienceTimeline, ProjectBoard } from "@/components/content-sections";
 import { Navigation } from "@/components/navigation";
-import { Workflow } from "@/components/workflow";
 import { education, experience, links, profile, projects } from "@/config/portfolio";
 
 export default function Home() {
@@ -18,25 +17,17 @@ export default function Home() {
       <Navigation hasProjects={projects.length > 0} hasExperience={hasBackground} />
       <main id="main" className="shell" tabIndex={-1}>
         <section id="home" data-nav-section aria-labelledby="hero-title" className="hero">
-          <div className="hero-grid">
-            <div>
-              <p className="hero-eyebrow mono-label"><span aria-hidden="true" />{profile.eyebrow}</p>
-              <h1 id="hero-title">{profile.name}</h1>
-              <p className="intro">{profile.introduction}</p>
-              <div className="hero-actions flex flex-wrap gap-x-6 gap-y-1">
-                <a className="editorial-link" href={workTarget}>Selected work<ArrowRight size={17} aria-hidden="true" /></a>
-                {cv && <a className="editorial-link" href={cv} download>Download CV<Download size={16} aria-hidden="true" /></a>}
-                {links.email && <a className="editorial-link" href={`mailto:${links.email}`}>Email me<Mail size={16} aria-hidden="true" /></a>}
-              </div>
+          <HeroGeometry />
+          <div className="hero-content">
+            <p className="hero-eyebrow mono-label"><span aria-hidden="true" />{profile.eyebrow}</p>
+            <h1 id="hero-title">{profile.name}</h1>
+            <p className="intro">{profile.introduction}</p>
+            <div className="hero-actions flex flex-wrap gap-x-6 gap-y-1">
+              <a className="editorial-link" href={workTarget}>Selected work<ArrowRight size={17} aria-hidden="true" /></a>
+              {cv && <a className="editorial-link" href={cv} download>Download CV<Download size={16} aria-hidden="true" /></a>}
+              {links.email && <a className="editorial-link" href={`mailto:${links.email}`}>Email me<Mail size={16} aria-hidden="true" /></a>}
             </div>
-            <aside className="hero-availability" aria-label="Internship availability">
-              <HeroGeometry />
-              <p className="mono-label section-kicker">{profile.internship}</p>
-              <p>{profile.internshipTiming}</p>
-              <p>INSAT · Tunis, Tunisia</p>
-            </aside>
           </div>
-          <Workflow />
         </section>
         <ProjectBoard items={projects} />
         <ExperienceTimeline jobs={experience} studies={education} />
