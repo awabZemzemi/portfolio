@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ChessKnight, ChessPawn, ChessRook, ChevronRight, Download, ExternalLink, Mail } from "lucide-react";
 import { type Experience, type Project, links, profile } from "@/config/portfolio";
 
@@ -45,7 +46,13 @@ export function ProjectBoard({ items }: { items: Project[] }) {
               <circle cx="8" cy="19" r="4" /><circle cx="44" cy="8" r="5" /><circle cx="50" cy="31" r="4" /><circle cx="80" cy="21" r="7" /><circle cx="125" cy="9" r="4" />
             </g>
           </svg>}
-          <h3>{item.url ? <a href={item.url}>{item.title}{item.url.startsWith("/") ? <ChevronRight size={16} aria-hidden="true" /> : <ExternalLink size={16} aria-hidden="true" />}</a> : item.title}</h3>
+          <h3>
+            {item.url?.startsWith("/") && !item.url.startsWith("//") ? (
+              <Link href={item.url}>{item.title}<ChevronRight size={16} aria-hidden="true" /></Link>
+            ) : item.url ? (
+              <a href={item.url}>{item.title}<ExternalLink size={16} aria-hidden="true" /></a>
+            ) : item.title}
+          </h3>
           <p>{item.description}</p>
           {item.technologies && <p className="project-tech">{item.technologies.join(" · ")}</p>}
         </li>

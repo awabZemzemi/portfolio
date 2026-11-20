@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Brand } from "./brand";
@@ -64,7 +65,8 @@ export function Navigation({ hasProjects, hasExperience, projectPage = false }: 
           {items.map(item => {
             const id = item.toLowerCase();
             if (id === "projects" && !hasProjects) return <span key={id} aria-disabled="true" className="nav-disabled">{item}</span>;
-            return <a key={id} href={`${projectPage ? "/" : ""}#${id}`} aria-current={(projectPage ? "projects" : active) === id ? "location" : undefined} onClick={() => setOpen(false)}>{item}</a>;
+            const NavLink = projectPage ? Link : "a";
+            return <NavLink key={id} href={`${projectPage ? "/" : ""}#${id}`} aria-current={(projectPage ? "projects" : active) === id ? "location" : undefined} onClick={() => setOpen(false)}>{item}</NavLink>;
           })}
         </nav>
       </div>
