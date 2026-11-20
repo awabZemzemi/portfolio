@@ -1,3 +1,4 @@
+import { secondBrain } from "./second-brain";
 import { aiops } from "./aiops";
 
 export interface Project {
@@ -42,7 +43,7 @@ export const links: PersonalLinks = {
   cv: undefined,
 };
 
-export const projects: Project[] = [aiops];
+export const projects: Project[] = [aiops, secondBrain];
 
 export const experience: Experience[] = [];
 

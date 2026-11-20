@@ -128,6 +128,7 @@ h1 span { color: var(--color-sage); }
 .project-board li:has(a):hover, .project-board li:focus-within { background: #213026; }
 .project-board h3 a::after { content: ""; position: absolute; inset: 0; border-radius: 6px; }
 .project-category { display: flex; gap: .7rem; align-items: center; color: var(--color-gold); }
-.project-category .boardmark { grid-template-columns: repeat(2, 5px); grid-template-rows: repeat(2, 5px); }
+.project-board li:nth-child(even) .project-category svg { color: var(--color-sage); }
+.project-board li:has(a):is(:hover,:focus-within) { box-shadow: inset 0 0 0 1px var(--color-pine); }
 .project-board .project-tech { font: .82rem/1.7 var(--font-mono); color: var(--color-sage); margin-top: 1rem; }
 .card-circuit { display: block; width: 8rem; height: auto; margin: 1.25rem 0 .8rem; color: var(--color-sage); }

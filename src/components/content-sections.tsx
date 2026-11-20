@@ -1,4 +1,4 @@
-import { ChevronRight, Download, ExternalLink, Mail } from "lucide-react";
+import { ChessKnight, ChessRook, ChevronRight, Download, ExternalLink, Mail } from "lucide-react";
 import { type Experience, type Project, links, profile } from "@/config/portfolio";
 
 export function About() {
@@ -17,10 +17,17 @@ export function ProjectBoard({ items }: { items: Project[] }) {
       <h2 id="projects-title">Selected projects</h2>
       <ul className="project-board">{items.map(item => (
         <li key={item.id}>
-          {item.category && <div className="project-category mono-label"><span className="boardmark" aria-hidden="true"><i /><i /><i /><i /></span>{item.category}</div>}
+          {item.category && <div className="project-category mono-label">{item.id === "aiops-agent" && <ChessRook size={22} strokeWidth={1.5} aria-hidden="true" />}
+            {item.id === "second-brain" && <ChessKnight size={22} strokeWidth={1.5} aria-hidden="true" />}
+            {item.category}</div>}
           {item.id === "aiops-agent" && <svg className="card-circuit" viewBox="0 0 140 38" aria-hidden="true">
             <g stroke="currentColor" fill="none"><path d="M13 14h39m23 0h47M119 23v9H61V21" /><rect x="2" y="8" width="13" height="13" rx="2" /><rect x="52" y="5" width="22" height="19" rx="3" /><path d="m120 4 11 6v12l-11 6-11-6V10Z" /></g>
             <path d="M58 11h10v7H58z" fill="currentColor" />
+          </svg>}
+          {item.id === "second-brain" && <svg className="card-circuit" viewBox="0 0 140 38" aria-hidden="true">
+            <g stroke="currentColor" fill="var(--color-surface)"><path d="M8 19 44 8 80 21 125 9M8 19l42 12 30-10" fill="none" />
+              <circle cx="8" cy="19" r="4" /><circle cx="44" cy="8" r="5" /><circle cx="50" cy="31" r="4" /><circle cx="80" cy="21" r="7" /><circle cx="125" cy="9" r="4" />
+            </g>
           </svg>}
           <h3>{item.url ? <a href={item.url}>{item.title}{item.url.startsWith("/") ? <ChevronRight size={16} aria-hidden="true" /> : <ExternalLink size={16} aria-hidden="true" />}</a> : item.title}</h3>
           <p>{item.description}</p>
