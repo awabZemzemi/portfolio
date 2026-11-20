@@ -5,7 +5,6 @@ export const secondBrain = {
   title: "Second Brain — AI Knowledge Assistant",
   category: "Agentic AI · GraphRAG",
   description: "A personal knowledge assistant that combines semantic search with relationships extracted from notes. LangGraph plans the search and brings both kinds of evidence together to answer a question.",
-  preview: ["LangGraph", "ChromaDB + Neo4j", "Answer"],
   technologies: ["LangGraph", "ChromaDB", "Neo4j", "LangSmith"],
   url: "/projects/second-brain",
   repository: `${repository}/tree/VersionE`,

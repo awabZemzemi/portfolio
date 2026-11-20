@@ -1,52 +1,100 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { initialPlayback, stepDuration, transitionPlayback } from "../src/components/architecture/playback.ts";
+import { aiopsDiagram } from "../src/components/architecture/aiops-data.ts";
+import { ingestionDiagram, retrievalDiagram } from "../src/components/architecture/knowledge-data.ts";
+import { buildCues, createTimeline } from "../src/components/architecture/playback.ts";
 
-const last = 2;
-const go = (state, action) => transitionPlayback(state, action, last);
+function fakeClock() {
+  let nextId = 0;
+  let now = 0;
+  const pending = new Map();
+  const all = new Map();
+  return {
+    request(callback) {
+      const id = ++nextId;
+      pending.set(id, callback);
+      all.set(id, callback);
+      return id;
+    },
+    cancel(id) { pending.delete(id); },
+    count() { return pending.size; },
+    last() { return nextId; },
+    invoke(id) { all.get(id)(now); },
+    frame(ms) {
+      now += ms;
+      const current = [...pending.values()];
+      pending.clear();
+      for (const callback of current) callback(now);
+    },
+  };
+}
 
-test("starts idle and makes repeated Play idempotent", () => {
-  assert.equal(initialPlayback.index, -1);
-  const playing = go(initialPlayback, { type: "play", now: 0 });
-  assert.equal(playing.index, 0);
-  assert.equal(playing.mode, "playing");
-  assert.strictEqual(go(playing, { type: "play", now: 100 }), playing);
+test("cues follow the actual AIOps and Second Brain stage order", () => {
+  assert.deepEqual(buildCues(aiopsDiagram.steps).flatMap(cue => cue.edges),
+    ["request", "invoke", "select", "dispatch", "query", "read", "evidence", "result", "resume", "diagnosis", "response"]);
+  assert.deepEqual(buildCues(ingestionDiagram.steps).slice(-3).map(cue => [cue.edges[0], cue.signal]),
+    [["commit", "note"], ["embed", "vector"], ["connect", "relations"]]);
+  assert.deepEqual(buildCues(retrievalDiagram.steps).find(cue => cue.edges.length === 2)?.edges, ["passages", "relations"]);
 });
 
-test("pauses with time remaining and ignores a stale timeout", () => {
-  const playing = go(initialPlayback, { type: "play", now: 50 });
-  const paused = go(playing, { type: "pause", now: 1050 });
-  assert.equal(paused.remaining, stepDuration - 1000);
-  const resumed = go(paused, { type: "play", now: 2000 });
-  assert.equal(resumed.remaining, paused.remaining);
-  assert.equal(resumed.frame, playing.frame);
-  assert.strictEqual(go(resumed, { type: "elapsed", generation: playing.generation, now: 3000 }), resumed);
-  const next = go(resumed, { type: "elapsed", generation: resumed.generation, now: 2000 + resumed.remaining });
-  assert.equal(next.index, 1);
-  assert.equal(next.remaining, stepDuration);
+const cues = buildCues([
+  { label: "first", nodes: [], duration: 100 },
+  { label: "second", nodes: [], duration: 100 },
+]);
+
+test("scrolling away freezes progress and repeated visibility events schedule one frame", () => {
+  const clock = fakeClock();
+  const frames = [];
+  let completed = 0;
+  const timeline = createTimeline(cues, clock, (cue, progress) => frames.push([cue.label, progress]), () => true, () => completed++);
+  assert.equal(clock.count(), 0);
+  timeline.setVisible(true);
+  timeline.setVisible(true);
+  assert.equal(clock.count(), 1);
+  clock.frame(0);
+  clock.frame(50);
+  const stale = clock.last();
+  timeline.setVisible(false);
+  assert.equal(clock.count(), 0);
+  clock.frame(700);
+  timeline.setVisible(true);
+  clock.invoke(stale);
+  assert.equal(clock.count(), 1);
+  clock.frame(0);
+  assert.deepEqual(frames.at(-1), ["first", .5]);
+  clock.frame(50);
+  clock.frame(0);
+  clock.frame(100);
+  assert.deepEqual(frames.at(-1), ["second", 1]);
+  assert.equal(completed, 1);
+  timeline.setVisible(false);
+  timeline.setVisible(true);
+  assert.equal(clock.count(), 0);
 });
 
-test("forward and backward select stable frames and clamp at the bounds", () => {
-  assert.strictEqual(go(initialPlayback, { type: "step", direction: -1 }), initialPlayback);
-  const first = go(initialPlayback, { type: "step", direction: 1 });
-  const middle = go(first, { type: "step", direction: 1 });
-  const final = go(middle, { type: "step", direction: 1 });
-  assert.equal(middle.mode, "paused");
-  assert.strictEqual(go(final, { type: "step", direction: 1 }), final);
-  assert.equal(go(final, { type: "step", direction: -1 }).index, 1);
+test("a segment below the viewport waits without animation work until scrolling", () => {
+  const clock = fakeClock();
+  let canStart = false;
+  let last;
+  const timeline = createTimeline(cues, clock, (cue, value) => { last = [cue.label, value]; }, () => canStart, () => {});
+  timeline.setVisible(true);
+  clock.frame(0);
+  assert.equal(last, undefined);
+  assert.equal(clock.count(), 0);
+  canStart = true;
+  timeline.recheck();
+  clock.frame(500);
+  assert.deepEqual(last, ["first", 0]);
 });
 
-test("Replay always restarts and the final timeout completes without looping", () => {
-  const playing = go(initialPlayback, { type: "play", now: 0 });
-  const replayed = go(playing, { type: "replay", now: 35 });
-  assert.equal(replayed.index, 0);
-  assert.notEqual(replayed.frame, playing.frame);
-  let state = replayed;
-  for (let step = 1; step <= 3; step++) {
-    state = go(state, { type: "elapsed", generation: state.generation, now: step * stepDuration });
-  }
-  assert.equal(state.index, last);
-  assert.equal(state.mode, "complete");
-  assert.strictEqual(go(state, { type: "elapsed", generation: state.generation, now: 10000 }), state);
-  assert.equal(go(state, { type: "play", now: 10001 }).index, 0);
+test("unmount cleanup cancels pending frames and ignores late notifications", () => {
+  const clock = fakeClock();
+  const timeline = createTimeline(cues, clock, () => assert.fail("Unexpected paint"), () => true, () => assert.fail("Unexpected completion"));
+  timeline.setVisible(true);
+  const stale = clock.last();
+  timeline.dispose();
+  timeline.setVisible(true);
+  timeline.recheck();
+  clock.invoke(stale);
+  assert.equal(clock.count(), 0);
 });

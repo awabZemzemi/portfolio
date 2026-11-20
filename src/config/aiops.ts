@@ -8,7 +8,6 @@ export const aiops = {
   subtitle: "Intelligent Kubernetes Diagnostics",
   category: "Agentic AI · Kubernetes",
   description: "An AI-powered Kubernetes diagnostic system using LangGraph, FastAPI, and read-only cluster tools to investigate infrastructure problems through evidence-grounded reasoning.",
-  preview: ["FastAPI", "LangGraph", "Kubernetes"],
   technologies: ["LangGraph", "FastAPI", "Kubernetes", "Python", "RBAC"],
   repository,
   contribution: "I built the investigation backend, the LangGraph tool loop, and the restricted Kubernetes evidence collectors. I also implemented namespace authorization and added tests for the request and deployment boundaries.",

@@ -1,6 +1,6 @@
 # Awab Zemzemi · Engineering portfolio
 
-A portfolio with two project case studies built with the Next.js App Router, TypeScript, Tailwind CSS, and Lucide. The homepage is prerendered at build time. Next.js fetches Bricolage Grotesque and the IBM Plex fonts at build time and serves them with the site.
+A portfolio with three project case studies built with the Next.js App Router, TypeScript, Tailwind CSS, and Lucide. The homepage is prerendered at build time. Next.js fetches Bricolage Grotesque and the IBM Plex fonts at build time and serves them with the site.
 
 ## Run locally
 
@@ -50,6 +50,8 @@ Set `PORTFOLIO_SITE_URL` to the verified public HTTPS origin in the production e
 
 The AIOps case study uses the sanitized [Kind capture](docs/aiops-demo/evidence.json), with provenance documented in the [evidence notes](docs/aiops-demo/README.md). Update the JSON only with reviewed evidence.
 
+SentinelML uses pinned references to the public runtime and MLOps repositories in `src/config/sentinelml.ts`. Its metrics match saved notebook output on the MLOps `awab` branch. The page documents reproducibility concerns in that notebook and the verification limits around FastAPI and Jenkins retraining. Architecture data lives in `src/components/architecture/sentinel-data.ts`.
+
 ## Project structure
 
 ```text
@@ -57,13 +59,13 @@ src/
   app/
     layout.tsx             Fonts and SEO metadata
     page.tsx               Homepage composition and CV availability
-    projects/              AIOps and Second Brain case studies
+    projects/              AIOps, Second Brain, and SentinelML case studies
     globals.css            Design tokens, layouts, and responsive styles
     icon.svg               Portfolio mark
   components/
     brand.tsx              Name and board mark
     content-sections.tsx   About, project board, timeline, and contact
-    architecture/          Responsive diagrams and playback state
+    architecture/          Responsive SVG diagrams and viewport-triggered motion
     navigation.tsx         Section navigation and mobile disclosure
     workflow.tsx           Design, build, deploy, and observe stages
   config/
@@ -78,10 +80,10 @@ The public résumé is at `public/cv.pdf`. Use a copy with private contact detai
 
 Add verified roles to `experience` and academic entries to `education`, in display order. Each entry has an ID, role, organization, period, and location. Add optional highlights and a technology list. Empty groups are hidden.
 
-## Add real projects in Phase 2
+## Add a project to the gallery
 
 1. Open the typed `projects` array in `src/config/portfolio.ts`.
-2. Append one record per project with a unique `id`, a real `title`, and a concise `description` explaining what it does. Supply the optional `url` when a repository, demo, or case study is ready.
+2. Append one record with a unique `id`, a working `url`, a title, a short description, a category, and three or four technologies. Select a `piece` and supply a technical `preview`. A `flow` preview accepts four ordered nodes with titles and short details. Extend `ProjectDiagram` when a project needs a different visual.
 3. Arrange the records in the desired reading order and run the checks above.
 
-Adding the first record displays Selected Projects, enables its navigation link, and redirects Explore Work to the board. Cards without a URL display their title as plain text. With an empty project list, Explore Work points to Experience, or About if the timeline is also empty.
+Each project adds a vertical pair to the desktop checkerboard, with three pairs per two-row band. The middle column reverses the information and preview positions to preserve the alternating colors. Tablet uses one horizontal pair per row. Mobile stacks each project’s information above its preview. With an empty project list, Selected Work points to Experience, or About if the timeline is also empty.

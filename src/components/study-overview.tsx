@@ -1,3 +1,4 @@
+import { StudyReveal } from "./study-reveal";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
@@ -40,9 +41,9 @@ export function StudyDecisions({ items }: { items: readonly (readonly [string, s
   return (
     <section className="section-row" aria-labelledby="decisions-title">
       <h2 id="decisions-title">Engineering decisions</h2>
-      <div className="study-decisions">
+      <StudyReveal className="study-decisions">
         {items.map(([label, body]) => <div key={label}><h3>{label}</h3><p>{body}</p></div>)}
-      </div>
+      </StudyReveal>
     </section>
   );
 }

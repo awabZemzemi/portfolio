@@ -60,3 +60,25 @@
 @media (max-width: 760px) {
   .study-overview-grid, .evidence-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+.study-back, .study-contribution .editorial-link, .study-source-list a {
+  text-decoration-color: transparent;
+  transition: color .18s ease, text-decoration-color .18s ease;
+}
+.study-back:is(:hover,:focus-visible), .study-source-list a:is(:hover,:focus-visible) {
+  color: var(--color-paper);
+  text-decoration-color: var(--color-sage);
+}
+.study-contribution .editorial-link { text-decoration-color: var(--color-pine); }
+.study-contribution .editorial-link:is(:hover,:focus-visible) { text-decoration-color: var(--color-sage); }
+.study-decisions[data-study-reveal] > div { transition: border-color .18s ease; }
+.study-decisions[data-study-reveal] > div + div:hover { border-top-color: var(--color-pine); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .study-overview-grid { animation: study-enter .42s cubic-bezier(.2,.65,.3,1) both; }
+  [data-study-reveal][data-revealed="true"] { animation: study-enter .35s cubic-bezier(.2,.65,.3,1) both; }
+}
+@keyframes study-enter {
+  from { opacity: .86; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

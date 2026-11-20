@@ -4,8 +4,9 @@ import { test } from "node:test";
 import { aiopsDiagram } from "../src/components/architecture/aiops-data.ts";
 import { ingestionDiagram, retrievalDiagram } from "../src/components/architecture/knowledge-data.ts";
 import { resolveSiteOrigin } from "../src/config/site.ts";
+import { sentinelOnline, sentinelLifecycle } from "../src/components/architecture/sentinel-data.ts";
 
-for (const diagram of [aiopsDiagram, ingestionDiagram, retrievalDiagram]) {
+for (const diagram of [aiopsDiagram, ingestionDiagram, retrievalDiagram, sentinelOnline, sentinelLifecycle]) {
   test(`${diagram.title} has valid layout, edge, and playback references`, () => {
     const ids = diagram.nodes.map(node => node.id);
     const edges = diagram.edges.map(edge => edge.id);

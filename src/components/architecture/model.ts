@@ -1,4 +1,9 @@
 export const flows = {
+  event: { label: "Transaction event", color: "#aab8a8" },
+  features: { label: "Feature vector", color: "#c0a170" },
+  prediction: { label: "Prediction event", color: "#9fbea6", dashed: true },
+  experiment: { label: "Training data / artifact", color: "#c0a170" },
+  automation: { label: "Pipeline stage", color: "#aab8a8" },
   request: { label: "Request", color: "#aab8a8" },
   tools: { label: "Tool call", color: "#c0a170" },
   evidence: { label: "Returning evidence", color: "#9fbea6", dashed: true },
@@ -10,14 +15,19 @@ export const flows = {
 } as const;
 
 export type Flow = keyof typeof flows;
+export type Signal = "packet" | "note" | "vector" | "relations" | "passages";
+export type Boundary = "application" | "kubernetes";
+export type StoreMark = "rows" | "vector" | "relations";
 type NodeKind = "client" | "service" | "agent" | "tool" | "store";
-export type Node = { id: string; title: string; details: string[]; kind: NodeKind };
+export type Node = { id: string; title: string; details: string[]; kind: NodeKind; mark?: StoreMark; boundary?: Boundary };
 type Axis = "horizontal" | "vertical";
 export type Edge = {
   id: string;
   from: string;
   to: string;
   flow: Flow;
+  signal?: Signal;
+  signalColor?: string;
   offset?: number;
   label?: string;
 };
@@ -38,5 +48,5 @@ export type Diagram = {
   edges: Edge[];
   zones?: { label: string; nodes: string[] }[];
   layouts: Record<"wide" | "medium" | "narrow", Layout>;
-  steps: { label: string; nodes: string[]; edges?: string[] }[];
+  steps: { label: string; nodes: string[]; edges?: string[]; duration: number; signal?: Signal; together?: boolean; inspect?: Boundary }[];
 };
