@@ -2,52 +2,64 @@ const runtime = "https://github.com/SentineMl/SentinelML";
 const training = "https://github.com/SentineMl/MLOps";
 const runtimeRevision = "76803222a737239db53e4b23a0bc4d9537807a7e";
 const trainingRevision = "8013c870e2ee730de8c69f3b90d3e3f4f62f4032";
+const notebookRevision = "bd74e7320340e049aad3ac5ca06dbc27bfc0ed49";
+const runtimeFile = (path: string) => runtime + "/blob/" + runtimeRevision + "/" + path;
+const trainingFile = (path: string) => training + "/blob/" + trainingRevision + "/" + path;
 
 export const sentinelml = {
   id: "sentinelml",
   title: "SentinelML",
-  subtitle: "Real-Time Bank Transaction Anomaly Detection",
+  subtitle: "Bank Transaction Anomaly Detection",
   url: "/projects/sentinelml",
-  category: "Machine learning · MLOps · Streaming systems",
-  description: "A transaction-streaming system that turns Kafka events into Isolation Forest anomaly scores, with MLflow experiment tracking and Docker service packaging.",
-  contribution: "My project connects transaction processing, anomaly detection, experiment tracking, and service packaging across an online pipeline and an offline model lifecycle.",
-  technologies: ["Python", "Apache Kafka", "scikit-learn", "MLflow", "Jenkins", "Docker"],
+  category: "MLOps · Streaming ML · Anomaly Detection",
+  description: "A bank transaction anomaly detection project connecting offline Isolation Forest training and MLflow model management with Kafka-based streaming inference.",
+  contribution: "I built components across Kafka-based transaction processing, Isolation Forest training and evaluation, MLflow tracking, and containerized inference.",
+  technologies: ["Kafka", "Python", "MLflow", "Isolation Forest", "Docker", "Jenkins"],
   repository: runtime,
-  evaluationSource: "https://github.com/SentineMl/MLOps/blob/bd74e7320340e049aad3ac5ca06dbc27bfc0ed49/train.ipynb",
-  metrics: [
-    { value: "0.875", label: "ROC-AUC", detail: "Measures how well anomaly scores rank positive examples above negative examples across thresholds." },
-    { value: "0.678", label: "PR-AUC", detail: "Summarizes precision and recall. The training script calculates average precision, which it logs as pr_auc." },
-    { value: "72%", label: "Anomaly recall", detail: "The reported share of labeled anomalies detected at the selected threshold." },
+  repositories: [
+    { label: "ML Training & MLOps", href: training },
+    { label: "Streaming & Inference", href: runtime },
+  ],
+  evaluationSource: training + "/blob/" + notebookRevision + "/train.ipynb",
+  modelSource: runtimeFile("services/inference_service/model.py"),
+  containerSource: runtimeFile("services/inference_service/dockerfile"),
+  results: [
+    { label: "Test rows", value: "1,496,754", context: "Saved awab notebook classification report" },
+    { label: "ROC-AUC", value: "0.875", context: "Saved test scores from a normal-only Isolation Forest" },
+    { label: "Average precision", value: "0.678", context: "Reported as PR-AUC in the notebook" },
+    { label: "Anomaly recall", value: "72%", context: "Class-1 recall at the notebook's model threshold" },
   ],
   decisions: [
-    ["Separate raw events and features", "Kafka topics separate transaction replay, feature processing, and scoring. The processing worker publishes a timestamped features envelope. Its consumer commits offsets after attempting publication, while inference enables automatic commits. Delivery and failure handling need to be assessed at each stage."],
-    ["Versioned model loading", "The inference worker loads an explicit MLflow registry model version and reads feature order and threshold from local metadata. This makes model selection explicit, while keeping metadata aligned with the selected model is an integration responsibility."],
-    ["Normal-only model fitting", "The training script fits Isolation Forest on normal transactions and evaluates on a mixed validation split. It chooses a threshold by validation F1. The feature transform is fitted before the split, and threshold selection shares the evaluation data, so an independent test set would be needed for a stronger generalization estimate."],
-    ["Tracking and packaging boundaries", "MLflow receives parameters, metrics, and the registered model artifact. Dockerfiles package the workers and Compose wires the services together. The checked Jenkinsfile contains checkout and dependency-installation stages. The separate validation script can set a champion alias, while serving loads a configured version."],
+    ["Two repositories, one model lifecycle", "MLOps contains feature engineering, training, MLflow tracking, and a separate registry-validation script. SentinelML contains transaction replay, Kafka workers, and inference. Both Compose stacks name the same MLflow network, but source alone does not verify a successful combined run."],
+    ["Explicit model lookup", "The inference worker loads a fixed registry name and version once when it starts, then reads feature order and threshold from local JSON. The promotion script can set a champion alias, but serving does not resolve that alias or reload a model during its loop."],
+    ["Kafka service boundaries", "The generator publishes raw_events, the processor publishes features, and inference publishes predictions. The three topics separate replay, transformation, and scoring without making FastAPI a hidden step in the event path."],
+    ["Feature contract remains open", "Training fits scaling and categorical encoding on a batch before the split; the streaming processor transforms individual records differently. No fitted transform or feature-order artifact is published with the registered model in the inspected source."],
+    ["Automation scope", "The public Jenkinsfile checks out source and installs worker dependencies. Training, validation, registry promotion, image deployment, and service restart are not Jenkins stages in the inspected repositories."],
   ] as const,
   stack: [
-    ["Streaming", "Apache Kafka · raw_events, features, predictions"],
-    ["Inference", "Python consumer · Pydantic event validation"],
-    ["Machine learning", "scikit-learn Isolation Forest · pandas · NumPy"],
-    ["Experiment tracking", "MLflow runs, metrics, artifacts, and model registry"],
-    ["Automation & packaging", "Jenkins checkout and dependency installation · Docker Compose"],
+    ["Offline training", "Python · scikit-learn Isolation Forest · pandas"],
+    ["Model management", "MLflow runs, metrics, model versions · PostgreSQL + object storage"],
+    ["Streaming inference", "Kafka · Python workers · Pydantic events · PostgreSQL"],
+    ["Packaging & automation", "Docker Compose · Jenkins checkout and dependency installation"],
   ],
   sources: [
-    { label: "Saved evaluation output", path: "awab/train.ipynb", href: "https://github.com/SentineMl/MLOps/blob/bd74e7320340e049aad3ac5ca06dbc27bfc0ed49/train.ipynb" },
+    { label: "Saved historical evaluation", path: "MLOps · awab/train.ipynb", href: training + "/blob/" + notebookRevision + "/train.ipynb" },
+    ...[
+      ["Training and validation", "tracking/train_eval.py"],
+      ["Offline feature engineering", "tracking/feature_eng.py"],
+      ["MLflow model registration", "tracking/utils.py"],
+      ["Registry validation and alias", "validation/validate_promote.py"],
+      ["MLflow service and artifact store", "infra/mlflow/docker-compose/docker-compose.yml"],
+    ].map(([label, path]) => ({ label, path: "MLOps · " + path, href: trainingFile(path) })),
     ...[
       ["Transaction replay", "services/event_generator_service/generator.py"],
-      ["Feature processing loop", "services/data_process_service/main.py"],
-      ["Inference and output handling", "services/inference_service/main.py"],
-      ["Model loading and scoring", "services/inference_service/model.py"],
-      ["Prediction schema", "services/inference_service/schema.py"],
-      ["Worker packaging", "services/inference_service/dockerfile"],
-      ["Service topology", "infra/docker-compose.yaml"],
+      ["Feature processing", "services/data_process_service/main.py"],
+      ["Streaming transformation", "services/data_process_service/data_processing.py"],
+      ["Inference consumer and output", "services/inference_service/main.py"],
+      ["Registry model lookup", "services/inference_service/model.py"],
+      ["Serving configuration", "services/inference_service/config.py"],
       ["Jenkins stages", "Jenkinsfile"],
-    ].map(([label, path]) => ({ label, path, href: `${runtime}/blob/${runtimeRevision}/${path}` })),
-    ...[
-      ["Training and evaluation method", "tracking/train_eval.py"],
-      ["MLflow logging", "tracking/utils.py"],
-      ["Registry validation script", "validation/validate_promote.py"],
-    ].map(([label, path]) => ({ label, path, href: `${training}/blob/${trainingRevision}/${path}` })),
+      ["Runtime topology", "infra/docker-compose.yaml"],
+    ].map(([label, path]) => ({ label, path: "SentinelML · " + path, href: runtimeFile(path) })),
   ],
 };

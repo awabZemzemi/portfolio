@@ -2,6 +2,7 @@ import { RouteSignal, StoreNotation } from "./diagram-marks";
 import { flows, type Box, type Diagram, type Edge, type Layout, type Node } from "./model";
 
 function connection(edge: Edge, layout: Layout): { path: string; x: number; y: number; anchor: "start" | "middle" | "end" } {
+  if (layout.routes?.[edge.id]) return layout.routes[edge.id];
   const [ax, ay, aw, ah] = layout.boxes[edge.from];
   const [bx, by, bw, bh] = layout.boxes[edge.to];
   const offset = edge.offset ?? 0;

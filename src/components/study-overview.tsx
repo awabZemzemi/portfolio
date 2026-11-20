@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
 type Source = { label: string; path: string; href: string };
 
-export function StudyOverview({ title, category, objective, objectiveLabel, status, technologies, contribution, repository, children }: {
+export function StudyOverview({ title, category, objective, objectiveLabel, status, technologies, contribution, repository, repositories, children }: {
   title: string;
   category: string;
   objective: string;
@@ -14,6 +14,7 @@ export function StudyOverview({ title, category, objective, objectiveLabel, stat
   technologies: string[];
   contribution: string;
   repository: string;
+  repositories?: readonly { label: string; href: string }[];
   children?: ReactNode;
 }) {
   return (
@@ -34,7 +35,11 @@ export function StudyOverview({ title, category, objective, objectiveLabel, stat
         <aside className="study-contribution" aria-label="My contribution">
           <p className="mono-label section-kicker">My contribution</p>
           <p>{contribution}</p>
-          <a className="editorial-link" href={repository}>View repository<ArrowUpRight size={16} aria-hidden="true" /></a>
+          {repositories?.length ? (
+            <div className="study-repository-links">
+              {repositories.map(({ label, href }) => <a key={href} className="editorial-link" href={href}>{label}<ArrowUpRight size={16} aria-hidden="true" /></a>)}
+            </div>
+          ) : <a className="editorial-link" href={repository}>View repository<ArrowUpRight size={16} aria-hidden="true" /></a>}
         </aside>
       </div>
       {children}

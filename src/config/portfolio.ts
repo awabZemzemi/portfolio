@@ -87,9 +87,9 @@ export const projects: Project[] = [
     id: sentinelml.id,
     url: sentinelml.url,
     title: sentinelml.title,
-    category: "Machine learning · Streaming",
-    description: "Streams transactions through Kafka, scores anomalies with Isolation Forest, and tracks model experiments in MLflow.",
-    technologies: ["Kafka", "Isolation Forest", "MLflow", "Jenkins"],
+    category: "MLOps · Streaming ML",
+    description: "Pairs MLflow-tracked Isolation Forest training with Kafka transaction processing and a registry-backed inference worker.",
+    technologies: ["Kafka", "Python", "MLflow", "Docker", "Jenkins"],
     piece: "pawn",
     preview: {
       kind: "flow",
