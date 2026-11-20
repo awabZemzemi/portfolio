@@ -4,8 +4,7 @@ export function KnowledgeEvidence() {
     <section className="content-section" id="demonstration" aria-labelledby="knowledge-demo-title">
       <p className="section-kicker mono-label">VersionE implementation</p>
       <h2 id="knowledge-demo-title">Follow the note ID</h2>
-      <p className="section-copy demo-intro">One submission produces a PostgreSQL row, a searchable embedding, and a graph representation.
-        These examples show the API contract and indexing pattern in source.</p>
+      <p className="section-copy demo-intro">The backend commits a PostgreSQL row, then attempts ChromaDB and Neo4j indexing with the same note ID. These source-grounded examples show the API contract and indexing pattern. A later indexing failure can leave the committed row in place.</p>
       <StudyReveal className="evidence-grid">
         <div className="evidence-records">
           <h3>Ingest a note</h3>

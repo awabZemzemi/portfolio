@@ -71,6 +71,14 @@
 }
 .study-contribution .editorial-link { text-decoration-color: var(--color-pine); }
 .study-contribution .editorial-link:is(:hover,:focus-visible) { text-decoration-color: var(--color-sage); }
+.study-back svg, .study-source-list svg, .study-contribution .editorial-link svg {
+  transition: transform .18s ease-out;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .study-back:is(:hover,:focus-visible) svg { transform: translateX(-3px); }
+  .study-source-list a:is(:hover,:focus-visible) svg,
+  .study-contribution .editorial-link:is(:hover,:focus-visible) svg { transform: translate(2px, -2px); }
+}
 .study-decisions[data-study-reveal] > div { transition: border-color .18s ease; }
 .study-decisions[data-study-reveal] > div + div:hover { border-top-color: var(--color-pine); }
 

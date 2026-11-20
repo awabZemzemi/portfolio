@@ -5,10 +5,12 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
 type Source = { label: string; path: string; href: string };
 
-export function StudyOverview({ title, category, objective, technologies, contribution, repository, children }: {
+export function StudyOverview({ title, category, objective, objectiveLabel, status, technologies, contribution, repository, children }: {
   title: string;
   category: string;
   objective: string;
+  objectiveLabel?: string;
+  status?: string;
   technologies: string[];
   contribution: string;
   repository: string;
@@ -19,8 +21,11 @@ export function StudyOverview({ title, category, objective, technologies, contri
       <Link href="/#projects" className="study-back"><ArrowLeft size={14} aria-hidden="true" />Selected work</Link>
       <div className="study-overview-grid">
         <div>
-          <p className="mono-label section-kicker">{category}</p>
+          {status ? (
+            <div className="study-overview-meta"><p className="mono-label section-kicker">{category}</p><span className="study-status mono-label">{status}</span></div>
+          ) : <p className="mono-label section-kicker">{category}</p>}
           <h1>{title}</h1>
+          {objectiveLabel && <p className="mono-label section-kicker study-objective-label">{objectiveLabel}</p>}
           <p className="study-objective">{objective}</p>
           <ul className="study-technologies" role="list" aria-label="Key technologies">
             {technologies.map(technology => <li key={technology}>{technology}</li>)}
