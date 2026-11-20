@@ -3,10 +3,8 @@ export function KnowledgeGraph() {
     <figure className="knowledge-graph">
       <svg viewBox="0 0 370 215" role="img" aria-label="Graph schema. Two notes mention the same entity, which depends on another entity.">
         <defs>
-          <pattern id="knowledge-grid" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".8" fill="#526356" /></pattern>
           <marker id="knowledge-edge" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L8 4L0 8" fill="#aab7a4" /></marker>
         </defs>
-        <rect width="370" height="215" fill="url(#knowledge-grid)" opacity=".6" />
         <g fill="none" stroke="#aab7a4" markerEnd="url(#knowledge-edge)">
           <path d="M78 51C126 51 107 107 151 107" /><path d="M78 165C126 165 107 114 151 114" /><path d="M210 111H302" />
         </g>
@@ -17,7 +15,7 @@ export function KnowledgeGraph() {
         <g textAnchor="middle" fill="#f3efe5" fontSize="13"><text x="49" y="56">Note A</text><text x="49" y="170">Note B</text><text x="181" y="116">Entity</text><text x="330" y="116">Entity</text></g>
         <g fill="#c0a170" fontSize="12" fontFamily="var(--font-mono)"><text x="106" y="54">MENTIONS</text><text x="106" y="174">MENTIONS</text><text x="216" y="99">DEPENDS_ON</text></g>
       </svg>
-      <figcaption className="mono-label">Note and entity relationships</figcaption>
+      <figcaption className="mono-label">Conceptual schema · notes and entities</figcaption>
     </figure>
   );
 }

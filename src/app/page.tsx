@@ -1,10 +1,9 @@
 import { statSync } from "node:fs";
 import path from "node:path";
-import { ArrowRight, Download } from "lucide-react";
+import { ArrowRight, Download, Mail } from "lucide-react";
 import { HeroGeometry } from "@/components/hero-geometry";
 import { Brand } from "@/components/brand";
 import { About, Contact, ExperienceTimeline, ProjectBoard } from "@/components/content-sections";
-import { Entrance } from "@/components/entrance";
 import { Navigation } from "@/components/navigation";
 import { Workflow } from "@/components/workflow";
 import { education, experience, links, profile, projects } from "@/config/portfolio";
@@ -17,25 +16,31 @@ export default function Home() {
     <>
       <a className="skip-link" href="#main">Skip to content</a>
       <Navigation hasProjects={projects.length > 0} hasExperience={hasBackground} />
-      <main id="main" className="shell">
+      <main id="main" className="shell" tabIndex={-1}>
         <section id="home" data-nav-section aria-labelledby="hero-title" className="hero">
-          <Entrance>
-            <p className="hero-eyebrow mono-label"><span aria-hidden="true" />{profile.eyebrow}</p>
-            <h1 id="hero-title">Building intelligent systems, <span>from development to deployment.</span></h1>
-            <div className="hero-introduction">
+          <div className="hero-grid">
+            <div>
+              <p className="hero-eyebrow mono-label"><span aria-hidden="true" />{profile.eyebrow}</p>
+              <h1 id="hero-title">{profile.name}</h1>
               <p className="intro">{profile.introduction}</p>
-              <div className="hero-actions flex flex-wrap gap-3">
-                <a className="editorial-link" href={workTarget}>Explore selected work<ArrowRight size={17} aria-hidden="true" /></a>
-                {cv && <a className="button secondary" href={cv} download><Download size={17} aria-hidden="true" />Download CV</a>}
+              <div className="hero-actions flex flex-wrap gap-x-6 gap-y-1">
+                <a className="editorial-link" href={workTarget}>Selected work<ArrowRight size={17} aria-hidden="true" /></a>
+                {cv && <a className="editorial-link" href={cv} download>Download CV<Download size={16} aria-hidden="true" /></a>}
+                {links.email && <a className="editorial-link" href={`mailto:${links.email}`}>Email me<Mail size={16} aria-hidden="true" /></a>}
               </div>
-              <HeroGeometry />
             </div>
-          </Entrance>
+            <aside className="hero-availability" aria-label="Internship availability">
+              <HeroGeometry />
+              <p className="mono-label section-kicker">{profile.internship}</p>
+              <p>{profile.internshipTiming}</p>
+              <p>INSAT · Tunis, Tunisia</p>
+            </aside>
+          </div>
           <Workflow />
         </section>
-        <About />
         <ProjectBoard items={projects} />
         <ExperienceTimeline jobs={experience} studies={education} />
+        <About />
         <Contact cv={cv} />
       </main>
       <footer className="footer"><div className="shell flex flex-wrap items-center justify-between gap-5"><Brand /><a href="#home">Back to top</a></div></footer>

@@ -8,6 +8,7 @@ export interface Project {
   url?: string;
   category?: string;
   technologies?: string[];
+  preview?: string[];
 }
 
 export interface Experience {
@@ -30,8 +31,10 @@ interface PersonalLinks {
 
 export const profile = {
   name: "Awab Zemzemi",
-  eyebrow: "AI Engineering / Software Systems",
-  introduction: "I'm Awab, an engineering student at INSAT focused on AI agents and the software infrastructure behind them.",
+  eyebrow: "AI engineering · Software systems",
+  internship: "Final-year internship",
+  internshipTiming: "Around February 2027 · 4–6 months",
+  introduction: "I’m a final-year engineering student at INSAT. I build AI agents, retrieval systems, and the Python services and infrastructure that run them.",
   about: [
     "I study Computer Networks and Telecommunications at INSAT and build AI agents and LLM applications. My work connects retrieval and model inference with the backend services that make them usable.",
     "I’ve worked on document processing, GPU-hosted inference, and Kubernetes infrastructure. I’m interested in making those systems reliable and maintainable, from validating model output to tracing failures after deployment.",
@@ -42,7 +45,7 @@ export const links: PersonalLinks = {
   email: "awab.zemzemi@insat.ucar.tn",
   github: "https://github.com/awabZemzemi",
   linkedin: "https://www.linkedin.com/in/zemzemi-awab-626370234/",
-  cv: undefined,
+  cv: "/cv.pdf",
 };
 
 export const projects: Project[] = [aiops, secondBrain];
