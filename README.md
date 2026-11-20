@@ -45,7 +45,7 @@ Edit `src/config/portfolio.ts`. The `profile` object supplies the name, introduc
 
 For a CV, place the real PDF in `public/` (create the directory if needed) and set `links.cv` to its public path, such as `/cv.pdf`. Both download links appear only when the configured file exists. Rebuild after changing content or adding the file.
 
-Add verified roles to `experience` and academic entries to `education`, in display order. Each entry has an ID, role, organization, description, and optional period. Empty groups are hidden.
+Add verified roles to `experience` and academic entries to `education`, in display order. Each entry has an ID, role, organization, period, and location. Add optional highlights and a technology list. Empty groups are hidden.
 
 ## Add real projects in Phase 2
 
