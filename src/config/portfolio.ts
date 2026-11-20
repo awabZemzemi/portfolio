@@ -39,8 +39,6 @@ interface PersonalLinks {
 export const profile = {
   name: "Awab Zemzemi",
   eyebrow: "AI engineering · Software systems",
-  internship: "Final-year internship",
-  internshipTiming: "Around February 2027 · 4–6 months",
   introduction: "I’m a final-year engineering student at INSAT. I build AI agents, retrieval systems, and the Python services and infrastructure that run them.",
   about: [
     "I study Computer Networks and Telecommunications at INSAT and build AI agents and LLM applications. My work connects retrieval and model inference with the backend services that make them usable.",
