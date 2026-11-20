@@ -1,76 +1,65 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
-import { Pause, Play, RotateCcw } from "lucide-react";
+import { useEffect, useId, useReducer, type CSSProperties } from "react";
+import { ChevronLeft, ChevronRight, Pause, Play, RotateCcw } from "lucide-react";
 import { ArchitectureMap } from "./architecture-map";
 import { flows, type Diagram } from "./model";
+import { initialPlayback, stepDuration, transitionPlayback } from "./playback";
 import "./architecture.css";
 
-const stepDuration = 2200;
-
 export function ArchitecturePlayer({ diagram }: { diagram: Diagram }) {
-  const [playback, setPlayback] = useState({ index: -1, playing: false, finished: false, run: 0 });
-  const remaining = useRef(stepDuration);
-  const deadline = useRef(0);
-  const mapId = useId();
-  const step = diagram.steps[playback.index];
   const last = diagram.steps.length - 1;
+  const [state, dispatch] = useReducer(
+    (playback: typeof initialPlayback, action: Parameters<typeof transitionPlayback>[1]) => transitionPlayback(playback, action, last),
+    initialPlayback,
+  );
+  const mapId = useId();
+  const step = diagram.steps[state.index];
+  const playing = state.mode === "playing";
   const Heading = diagram.heading;
   const legend = Array.from(new Set(diagram.edges.map(edge => edge.flow)));
 
   useEffect(() => {
-    if (!playback.playing) return;
-    deadline.current = performance.now() + remaining.current;
+    if (!playing) return;
+    const remaining = Math.max(0, state.remaining - (performance.now() - state.startedAt));
     const timer = window.setTimeout(() => {
-      remaining.current = stepDuration;
-      setPlayback(current => current.index === last
-        ? { ...current, playing: false, finished: true }
-        : { ...current, index: current.index + 1 });
-    }, remaining.current);
+      dispatch({ type: "elapsed", generation: state.generation, now: performance.now() });
+    }, remaining);
     return () => window.clearTimeout(timer);
-  }, [playback.index, playback.playing, playback.run, last]);
-
-  function play(replay = false) {
-    if (!replay && playback.playing) return;
-    if (replay || !step || playback.finished) {
-      remaining.current = stepDuration;
-      setPlayback(current => ({ index: 0, playing: true, finished: false, run: current.run + 1 }));
-    } else {
-      setPlayback(current => ({ ...current, playing: true }));
-    }
-  }
-
-  function pause() {
-    if (!playback.playing) return;
-    remaining.current = Math.max(0, deadline.current - performance.now());
-    setPlayback(current => ({ ...current, playing: false }));
-  }
+  }, [playing, state.generation, state.remaining, state.startedAt]);
 
   return (
     <figure
       className="architecture-player"
       aria-labelledby={`${diagram.id}-title`}
-      data-playing={playback.playing}
+      data-playing={playing}
+      data-mode={state.mode}
       style={{ "--architecture-step-duration": `${stepDuration}ms` } as CSSProperties}
     >
       <figcaption>
         <Heading id={`${diagram.id}-title`}>{diagram.title}</Heading>
         <p className="architecture-description">{diagram.description}</p>
       </figcaption>
-      <ul className="architecture-legend" aria-label="Connection types">
+      <ul className="architecture-legend" aria-label="Connection types" role="list">
         {legend.map(key => <li key={key}><i aria-hidden="true" style={{ borderColor: flows[key].color, borderTopStyle: "dashed" in flows[key] ? "dashed" : "solid" }} />{flows[key].label}</li>)}
       </ul>
       <div className="architecture-playback">
         <div className="architecture-controls" role="group" aria-label={`${diagram.title} playback`}>
-          <button type="button" onClick={() => play()} aria-disabled={playback.playing} aria-controls={mapId}><Play size={14} aria-hidden="true" />Play</button>
-          <button type="button" onClick={pause} aria-disabled={!playback.playing} aria-controls={mapId}><Pause size={14} aria-hidden="true" />Pause</button>
-          <button type="button" onClick={() => { if (step) play(true); }} aria-disabled={!step} aria-controls={mapId}><RotateCcw size={14} aria-hidden="true" />Replay</button>
+          <div className="architecture-control-set">
+            <button type="button" aria-disabled={playing} aria-controls={mapId} onClick={() => dispatch({ type: "play", now: performance.now() })}><Play size={14} aria-hidden="true" />Play</button>
+            <button type="button" aria-disabled={!playing} aria-controls={mapId} onClick={() => dispatch({ type: "pause", now: performance.now() })}><Pause size={14} aria-hidden="true" />Pause</button>
+            <button type="button" aria-controls={mapId} onClick={() => dispatch({ type: "replay", now: performance.now() })}><RotateCcw size={14} aria-hidden="true" />Replay</button>
+          </div>
+          <div className="architecture-control-set">
+            <button type="button" aria-label="Back one step" aria-disabled={state.index <= 0} aria-controls={mapId} onClick={() => dispatch({ type: "step", direction: -1 })}><ChevronLeft size={16} aria-hidden="true" />Back</button>
+            <button type="button" aria-label="Next step" aria-disabled={state.index >= last} aria-controls={mapId} onClick={() => dispatch({ type: "step", direction: 1 })}>Next<ChevronRight size={16} aria-hidden="true" /></button>
+          </div>
         </div>
         <p className="architecture-status" role="status" aria-atomic="true">
-          {step ? <><span>{playback.finished ? "Complete" : `Step ${playback.index + 1} of ${diagram.steps.length}`}</span> {step.label}</> : "Play the illustrated flow."}
+          {step ? <><span>{state.mode === "complete" ? "Complete" : `Step ${state.index + 1} of ${diagram.steps.length}`}</span> {step.label}</> : "Illustrated execution flow. Choose Play or Next."}
         </p>
       </div>
-      <ArchitectureMap key={`${playback.run}-${playback.index}`} diagram={diagram} active={step} mapId={mapId} />
+      <ArchitectureMap key={state.frame} diagram={diagram} active={step} mapId={mapId} />
     </figure>
   );
 }

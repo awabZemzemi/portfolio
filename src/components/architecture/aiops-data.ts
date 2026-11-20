@@ -27,11 +27,11 @@ export const aiopsDiagram: Diagram = {
     { id: "records", title: "Cluster evidence", details: ["Pod status · Logs · Events", "Metrics when available"], kind: "store" },
   ],
   edges: [
-    { id: "request", from: "operator", to: "api", flow: "request", offset: -9 },
-    { id: "invoke", from: "api", to: "agent", flow: "request", offset: -9 },
-    { id: "select", from: "agent", to: "tool", flow: "tools", offset: -9 },
+    { id: "request", from: "operator", to: "api", flow: "request", offset: -9, label: "POST" },
+    { id: "invoke", from: "api", to: "agent", flow: "request", offset: -9, label: "invoke" },
+    { id: "select", from: "agent", to: "tool", flow: "tools", offset: -9, label: "tool call" },
     { id: "dispatch", from: "tool", to: "collector", flow: "tools", offset: -9 },
-    { id: "query", from: "collector", to: "kube", flow: "tools", offset: -9 },
+    { id: "query", from: "collector", to: "kube", flow: "tools", offset: -9, label: "read" },
     { id: "read", from: "records", to: "kube", flow: "evidence", label: "Resource data" },
     { id: "evidence", from: "kube", to: "collector", flow: "evidence", offset: 9 },
     { id: "result", from: "collector", to: "tool", flow: "evidence", offset: 9 },
@@ -49,7 +49,7 @@ export const aiopsDiagram: Diagram = {
       },
     },
     medium: {
-      size: [656, 546], hiddenLabels: ["read"],
+      size: [656, 546], hiddenLabels: ["read", "invoke"],
       boxes: {
         operator: [22, 48, 254, 80], api: [368, 48, 266, 80],
         agent: [22, 203, 254, 73], tool: [22, 321, 254, 73], collector: [22, 438, 254, 80],
@@ -59,7 +59,7 @@ export const aiopsDiagram: Diagram = {
       axes: { invoke: "vertical", diagnosis: "vertical" },
     },
     narrow: {
-      size: [320, 867], boxes: narrow, verticalTrack: .85, hiddenLabels: ["read"],
+      size: [320, 867], boxes: narrow, verticalTrack: .85, hiddenLabels: ["read", "request", "invoke", "select", "query"],
     },
   },
   steps: [
@@ -68,8 +68,7 @@ export const aiopsDiagram: Diagram = {
     { label: "FastAPI passes the authorized request to LangGraph.", nodes: ["api", "agent"], edges: ["invoke"] },
     { label: "AgentNode selects a read-only tool.", nodes: ["agent", "tool"], edges: ["select"] },
     { label: "ToolNode dispatches the selected diagnostic tool.", nodes: ["tool", "collector"], edges: ["dispatch"] },
-    { label: "The collector queries the Kubernetes API with ServiceAccount credentials.", nodes: ["collector", "kube"], edges: ["query"] },
-    { label: "Kubernetes independently enforces RBAC for the requested read.", nodes: ["kube"] },
+    { label: "The Kubernetes API authorizes the collector’s ServiceAccount read through RBAC.", nodes: ["collector", "kube"], edges: ["query"] },
     { label: "Cluster evidence returns through the Kubernetes API to the collector.", nodes: ["records", "kube", "collector"], edges: ["read", "evidence"] },
     { label: "Evidence returns through ToolNode to AgentNode, which can select another tool.", nodes: ["collector", "tool", "agent"], edges: ["result", "resume"] },
     { label: "FastAPI returns the diagnosis to the operator.", nodes: ["agent", "api", "operator"], edges: ["diagnosis", "response"] },

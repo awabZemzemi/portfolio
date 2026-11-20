@@ -1,6 +1,6 @@
 # Awab Zemzemi · Engineering portfolio
 
-A portfolio with two project case studies built with the Next.js App Router, TypeScript, Tailwind CSS, Motion, and Lucide. The homepage is prerendered at build time. Next.js fetches IBM Plex Sans and IBM Plex Mono at build time and serves them with the site.
+A portfolio with two project case studies built with the Next.js App Router, TypeScript, Tailwind CSS, and Lucide. The homepage is prerendered at build time. Next.js fetches Bricolage Grotesque and the IBM Plex fonts at build time and serves them with the site.
 
 ## Run locally
 
@@ -16,13 +16,15 @@ Open [localhost:3000](http://localhost:3000). To check and serve a production bu
 ```sh
 npm run lint
 npm run typecheck
+npm test
 npm run build
+npm run test:smoke
 npm start
 ```
 
 ## Continuous integration
 
-GitHub Actions runs **CI → Portfolio checks** on pushes to `main` and pull requests targeting `main`. The Ubuntu runner uses Node.js 22 and npm caching. It installs from the lockfile with `npm ci` and runs lint, type checking, and the production build. To diagnose a failure, open the PR’s **Checks** tab or the repository’s **Actions → CI** page, select the run, and expand the failed step.
+GitHub Actions runs **CI → Portfolio checks** on pushes to `main` and pull requests targeting `main`. The Ubuntu runner uses Node.js 22 and npm caching. It installs from the lockfile with `npm ci` and runs lint, type checking, unit tests, the production build, and production smoke tests. To diagnose a failure, open the PR’s **Checks** tab or the repository’s **Actions → CI** page, select the run, and expand the failed step.
 
 ### Protect main in GitHub
 
@@ -42,6 +44,12 @@ Vercel’s Git deployments run independently of GitHub Actions. The protected me
 
 To connect a domain later, open **Project Settings → Domains**, add a domain you own to the Production environment, and apply the DNS records Vercel provides. Wait for the dashboard to verify the domain. [Vercel domain setup](https://vercel.com/docs/domains/working-with-domains/add-a-domain)
 
+## Search indexing and evidence
+
+Set `PORTFOLIO_SITE_URL` to the verified public HTTPS origin in the production environment and rebuild to populate canonical URLs and sitemap entries. Without it, the sitemap has no entries and robots.txt omits its reference.
+
+The AIOps case study uses the sanitized [Kind capture](docs/aiops-demo/evidence.json), with provenance documented in the [evidence notes](docs/aiops-demo/README.md). Update the JSON only with reviewed evidence.
+
 ## Project structure
 
 ```text
@@ -49,12 +57,13 @@ src/
   app/
     layout.tsx             Fonts and SEO metadata
     page.tsx               Homepage composition and CV availability
+    projects/              AIOps and Second Brain case studies
     globals.css            Design tokens, layouts, and responsive styles
     icon.svg               Portfolio mark
   components/
     brand.tsx              Name and board mark
     content-sections.tsx   About, project board, timeline, and contact
-    entrance.tsx           Reduced-motion-aware hero entrance
+    architecture/          Responsive diagrams and playback state
     navigation.tsx         Section navigation and mobile disclosure
     workflow.tsx           Design, build, deploy, and observe stages
   config/
@@ -65,7 +74,7 @@ src/
 
 Edit `src/config/portfolio.ts`. The `profile` object supplies the name, introduction, and About copy. In `links`, set `email` to a plain email address, and set `github` and `linkedin` to your verified HTTPS profile URLs. Leave any unavailable field as `undefined`.
 
-Place the real résumé at `public/cv.pdf` and set `links.cv` to `"/cv.pdf"`. If you keep a different filename, set `links.cv` to the matching root-relative URL. Both download links appear only when the configured file exists. Rebuild after changing content or adding the file.
+The public résumé is at `public/cv.pdf`. Use a copy with private contact details removed when replacing it and set `links.cv` to `"/cv.pdf"`. If you keep a different filename, set `links.cv` to the matching root-relative URL. Both download links appear only when the configured file exists. Rebuild after changing content or adding the file.
 
 Add verified roles to `experience` and academic entries to `education`, in display order. Each entry has an ID, role, organization, period, and location. Add optional highlights and a technology list. Empty groups are hidden.
 

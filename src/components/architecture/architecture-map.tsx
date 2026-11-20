@@ -1,6 +1,6 @@
 import { flows, type Box, type Diagram, type Edge, type Layout, type Node } from "./model";
 
-function connection(edge: Edge, layout: Layout) {
+function connection(edge: Edge, layout: Layout): { path: string; x: number; y: number; anchor: "start" | "middle" | "end" } {
   const [ax, ay, aw, ah] = layout.boxes[edge.from];
   const [bx, by, bw, bh] = layout.boxes[edge.to];
   const offset = edge.offset ?? 0;
@@ -24,7 +24,12 @@ function connection(edge: Edge, layout: Layout) {
   const x2 = bx + bw * track + offset;
   // Keep parallel return paths separate through the bend as well as at the ports.
   const middle = (y1 + y2) / 2 + offset;
-  return { path: `M${x1} ${y1} V${middle} H${x2} V${y2}`, x: Math.max(x1, x2) + 9, y: (y1 + y2) / 2 + 4, anchor: "start" };
+  return {
+    path: `M${x1} ${y1} V${middle} H${x2} V${y2}`,
+    x: offset < 0 ? Math.min(x1, x2) - 9 : Math.max(x1, x2) + 9,
+    y: (y1 + y2) / 2 + 4,
+    anchor: offset < 0 ? "end" : "start",
+  };
 }
 
 function ArchitectureNode({ node, box, active }: { node: Node; box: Box; active: boolean }) {
@@ -95,7 +100,7 @@ export function ArchitectureMap({ diagram, active, mapId }: {
               <path d={path} stroke={flow.color} strokeDasharray={"dashed" in flow ? "4 4" : undefined} markerEnd={`url(#${prefix}-${edge.flow})`} />
               {selected && <path d={path} pathLength={100} className="architecture-signal" stroke={flow.color} />}
               {edge.label && !layout.hiddenLabels?.includes(edge.id) &&
-                <text x={x} y={y} textAnchor={anchor === "middle" ? "middle" : "start"} className="architecture-label">{edge.label}</text>}
+                <text x={x} y={y} textAnchor={anchor} className="architecture-label">{edge.label}</text>}
             </g>;
           })}
           {diagram.nodes.map(node => <ArchitectureNode

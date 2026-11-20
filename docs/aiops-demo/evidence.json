@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "title": "Investigating CrashLoopBackOff",
+  "sourceRevision": "908de7bc865b110278272548dfad24280657fb1b",
+  "scenario": {
+    "kind": "deliberately failing Kind lab workload",
+    "fixture": "deploy/test-lab/manifests/crash-pod.yaml",
+    "target": {
+      "namespace": "aiops",
+      "pod": "crash-demo"
+    }
+  },
+  "stages": [
+    {
+      "id": "request",
+      "title": "Investigation Request",
+      "provenance": "example-request",
+      "method": "POST",
+      "path": "/agent/investigate",
+      "body": {
+        "namespace": "aiops",
+        "message": "Investigate Pod crash-demo in namespace aiops. Use Pod status, previous container logs, and Kubernetes Events. Note whether metrics are available and distinguish observations from possible causes."
+      },
+      "submitted": false
+    },
+    {
+      "id": "tools",
+      "title": "Tool Execution",
+      "provenance": "live-collector",
+      "execution": "The diagnostic CLI orchestrated collectors directly.",
+      "collectors": [
+        {
+          "function": "collect_pod_information",
+          "agentTool": "get_pod_info"
+        },
+        {
+          "function": "collect_container_logs",
+          "agentTool": "get_logs"
+        },
+        {
+          "function": "collect_kubernetes_events",
+          "agentTool": "get_events"
+        },
+        {
+          "function": "collect_resource_metrics",
+          "agentTool": "get_metrics"
+        }
+      ],
+      "agentSelectedTools": null
+    },
+    {
+      "id": "evidence",
+      "title": "Kubernetes Evidence",
+      "provenance": "live-kind-snapshot",
+      "capturedAt": "2026-11-20T04:57:28.820899+00:00",
+      "pod": {
+        "phase": "Running",
+        "restart_policy": "Always"
+      },
+      "containers": [
+        {
+          "name": "crashing-container",
+          "ready": false,
+          "restart_count": 2874,
+          "state": {
+            "state": "Waiting",
+            "reason": "CrashLoopBackOff"
+          },
+          "previous_termination": {
+            "state": "Terminated",
+            "reason": "Error",
+            "exit_code": 1
+          },
+          "logs": {
+            "current": {
+              "lines": [
+                "Starting application...",
+                "ERROR: Database connection failed"
+              ],
+              "omitted_line_count": 0
+            },
+            "previous": {
+              "lines": [
+                "Starting application...",
+                "ERROR: Database connection failed"
+              ],
+              "omitted_line_count": 0
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "Normal",
+          "reason": "Pulled",
+          "count": 51
+        },
+        {
+          "type": "Warning",
+          "reason": "BackOff",
+          "count": 216
+        }
+      ],
+      "metricsAvailable": false,
+      "collectionErrors": [
+        {
+          "operation": "metrics",
+          "status": 404,
+          "message": "Resource unavailable"
+        }
+      ]
+    },
+    {
+      "id": "interpretation",
+      "title": "Agent Interpretation",
+      "provenance": "human-source-review",
+      "agentAnswer": null,
+      "summary": "The Pod phase is Running while its container is waiting in CrashLoopBackOff. The previous exit code was 1, and Kubernetes recorded BackOff. The fixture prints the database error and unconditionally exits. The log line alone does not establish a database outage."
+    },
+    {
+      "id": "result",
+      "title": "Result",
+      "provenance": "live-collector",
+      "collectorStatus": "partial",
+      "summary": "Pod status, bounded current and previous logs, and events were collected. The metrics API returned HTTP 404.",
+      "investigationId": null,
+      "apiResponseMetadata": null
+    }
+  ],
+  "verification": {
+    "liveIntegration": {
+      "test": "tests.collectors.test_integration.IntegrationTest.test_crash_demo",
+      "status": "passed"
+    },
+    "liveAccessReviews": [
+      {
+        "namespace": "aiops",
+        "verb": "get",
+        "resource": "pods/log",
+        "allowed": true
+      },
+      {
+        "namespace": "aiops",
+        "verb": "delete",
+        "resource": "pods",
+        "allowed": false
+      },
+      {
+        "namespace": "default",
+        "verb": "list",
+        "resource": "pods",
+        "allowed": false
+      }
+    ],
+    "offlineSuite": {
+      "command": "python -m unittest discover -s tests -v",
+      "executed": 127,
+      "passed": 127,
+      "skipped": 1,
+      "skippedReason": "Live collector test is opt-in and was run separately.",
+      "modelAndCluster": "mocked test dependencies"
+    }
+  }
+}

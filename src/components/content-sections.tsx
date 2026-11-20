@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChessKnight, ChessPawn, ChessRook, ChevronRight, Download, ExternalLink, Mail } from "lucide-react";
+import { ArrowRight, ChessKnight, ChessPawn, ChessRook, ChevronRight, Download, ExternalLink, Mail } from "lucide-react";
 import { type Experience, type Project, links, profile } from "@/config/portfolio";
 
 const chessPieces = { rook: ChessRook, knight: ChessKnight, pawn: ChessPawn };
@@ -33,20 +33,34 @@ export function ProjectBoard({ items }: { items: Project[] }) {
     <section id="projects" data-nav-section aria-labelledby="projects-title" className="content-section">
       <p className="section-kicker mono-label">Case studies</p>
       <SectionHeading id="projects-title">Selected projects</SectionHeading>
-      <ul className="project-board">{items.map(item => (
+      <ul className="project-board" role="list">{items.map(item => (
         <li key={item.id}>
-          {item.category && <div className="project-category mono-label">{item.id === "aiops-agent" && <ChessAccent piece="rook" />}
-            {item.id === "second-brain" && <ChessAccent piece="knight" />}
-            {item.category}</div>}
-          <h3>
-            {item.url?.startsWith("/") && !item.url.startsWith("//") ? (
-              <Link href={item.url}>{item.title}<ChevronRight size={16} aria-hidden="true" /></Link>
-            ) : item.url ? (
-              <a href={item.url}>{item.title}<ExternalLink size={16} aria-hidden="true" /></a>
-            ) : item.title}
-          </h3>
-          <p>{item.description}</p>
-          {item.technologies && <p className="project-tech">{item.technologies.join(" · ")}</p>}
+          <div className="project-entry">
+            {item.category && <div className="project-category mono-label">
+              {item.id === "aiops-agent" && <ChessAccent piece="rook" />}
+              {item.id === "second-brain" && <ChessAccent piece="knight" />}
+              {item.category}
+            </div>}
+            <h3>
+              {item.url?.startsWith("/") && !item.url.startsWith("//") ? (
+                <Link href={item.url}>{item.title}<ChevronRight size={19} aria-hidden="true" /></Link>
+              ) : item.url ? (
+                <a href={item.url}>{item.title}<ExternalLink size={16} aria-hidden="true" /></a>
+              ) : item.title}
+            </h3>
+            <p>{item.description}</p>
+            {item.technologies && <p className="project-tech">{item.technologies.join(" · ")}</p>}
+          </div>
+          {item.preview && (
+            <div className="project-preview">
+              <p className="mono-label">Architecture preview</p>
+              <ol aria-label={`${item.title} architecture summary`} role="list">
+                {item.preview.map((node, index, nodes) => (
+                  <li key={node}><span>{node}</span>{index < nodes.length - 1 && <ArrowRight size={15} aria-hidden="true" />}</li>
+                ))}
+              </ol>
+            </div>
+          )}
         </li>
       ))}</ul>
     </section>
