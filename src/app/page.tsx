@@ -1,7 +1,7 @@
 import { statSync } from "node:fs";
 import path from "node:path";
 import { Download, Folders } from "lucide-react";
-import { Architecture } from "@/components/architecture";
+import { HeroGeometry } from "@/components/hero-geometry";
 import { Brand } from "@/components/brand";
 import { About, Contact, ExperienceTimeline, ProjectBoard } from "@/components/content-sections";
 import { Entrance } from "@/components/entrance";
@@ -20,17 +20,15 @@ export default function Home() {
       <main id="main" className="shell">
         <section id="home" data-nav-section aria-labelledby="hero-title" className="hero">
           <Entrance>
-            <div className="hero-grid">
-              <div className="hero-copy">
-                <p className="hero-eyebrow mono-label"><span aria-hidden="true" />{profile.eyebrow}</p>
-                <h1 id="hero-title">Building intelligent systems, <span>from development to deployment.</span></h1>
-                <p className="intro">{profile.introduction}</p>
-                <div className="hero-actions flex flex-wrap gap-3">
-                  <a className="button primary" href={workTarget}><Folders size={17} aria-hidden="true" />Explore Work</a>
-                  {cv && <a className="button secondary" href={cv} download><Download size={17} aria-hidden="true" />Download CV</a>}
-                </div>
+            <p className="hero-eyebrow mono-label"><span aria-hidden="true" />{profile.eyebrow}</p>
+            <h1 id="hero-title">Building intelligent systems, <span>from development to deployment.</span></h1>
+            <div className="hero-introduction">
+              <p className="intro">{profile.introduction}</p>
+              <div className="hero-actions flex flex-wrap gap-3">
+                <a className="button primary" href={workTarget}><Folders size={17} aria-hidden="true" />Explore Work</a>
+                {cv && <a className="button secondary" href={cv} download><Download size={17} aria-hidden="true" />Download CV</a>}
               </div>
-              <Architecture />
+              <HeroGeometry />
             </div>
           </Entrance>
           <Workflow />

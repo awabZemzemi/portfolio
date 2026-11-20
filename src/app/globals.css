@@ -38,12 +38,17 @@ body { margin: 0; background: var(--color-canvas); color: var(--color-paper); fo
 .skip-link { position: fixed; z-index: 20; top: 0; left: 1rem; padding: .7rem 1rem; color: var(--color-canvas); background: var(--color-gold); transform: translateY(-150%); }
 .skip-link:focus { transform: translateY(0); }
 .hero { padding-block: clamp(4rem, 6.5vw, 6rem) clamp(3rem, 4.5vw, 4.5rem); }
-.hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: center; gap: clamp(1.5rem, 4vw, 4rem); }
-.mono-label, .architecture figcaption { font-family: var(--font-mono), monospace; font-size: .76rem; font-weight: 450; letter-spacing: .11em; text-transform: uppercase; }
+.mono-label { font-family: var(--font-mono), monospace; font-size: .76rem; font-weight: 450; letter-spacing: .11em; text-transform: uppercase; }
 .hero-eyebrow { display: flex; align-items: center; gap: .78rem; color: var(--color-gold); }
 .hero-eyebrow span { width: 1.7rem; height: 1px; background: var(--color-gold); flex-shrink: 0; }
 h1 { font-size: clamp(3.15rem, 4.9vw, 4.65rem); line-height: 1.045; letter-spacing: -.062em; font-weight: 530; margin: 1.5rem 0 1.4rem; text-wrap: balance; }
 h1 span { color: var(--color-sage); }
+.hero h1 {
+  max-width: 100%;
+  font-size: clamp(2.45rem, 5.35vw, 5.05rem);
+  margin-block: clamp(1.4rem, 2.1vw, 2rem) clamp(1.3rem, 1.9vw, 1.75rem);
+}
+.hero h1 span { display: block; }
 .intro { font-size: clamp(1.03rem, 1.25vw, 1.14rem); line-height: 1.65; color: var(--color-secondary); max-width: 33rem; }
 .hero-actions { margin-top: 1.8rem; }
 .button { display: inline-flex; align-items: center; justify-content: center; gap: .65rem; min-height: 46px; border-radius: 5px; padding: .65rem 1.12rem; font-size: .93rem; font-weight: 550; transition: background-color .18s, border-color .18s; }
@@ -51,11 +56,6 @@ h1 span { color: var(--color-sage); }
 .button.primary:hover { background: #cfb78f; }
 .button.secondary { background: var(--color-surface); border: 1px solid var(--color-edge); }
 .button.secondary:hover { border-color: var(--color-pine); }
-.architecture { width: 100%; margin: 1.25rem 0 0; }
-.architecture svg { width: 100%; height: auto; overflow: visible; }
-.diagram-type { font-family: var(--font-mono), monospace; font-size: 9.5px; letter-spacing: 1px; }
-.architecture figcaption { display: flex; align-items: center; justify-content: center; gap: .8rem; color: var(--color-muted); font-size: .75rem; letter-spacing: .14em; }
-.architecture figcaption span { width: 1.75rem; height: 1px; background: var(--color-edge); }
 .workflow { margin-top: clamp(2.8rem, 4.2vw, 4rem); padding: 1.4rem 2rem 1.65rem; border: 1px solid var(--color-edge); border-radius: 9px; background: var(--color-surface); }
 .workflow h2 { color: var(--color-secondary); }
 .workflow h2 svg { color: var(--color-gold); }
@@ -88,7 +88,6 @@ h1 span { color: var(--color-sage); }
 .footer > div > a:last-child { color: var(--color-secondary); font-size: .9rem; }
 
 @media (max-width: 900px) {
-  .hero-grid { gap: 1rem; }
   .workflow { padding-inline: 1.5rem; }
   .connector { margin-right: .7rem; }
 }
@@ -102,9 +101,7 @@ h1 span { color: var(--color-sage); }
   .nav-links a, .nav-disabled { min-height: 44px; }
   .nav-links a[aria-current]::after { left: auto; right: .5rem; bottom: 50%; }
   .hero { padding-top: 3.25rem; }
-  .hero-grid { grid-template-columns: 1fr; gap: 1.5rem; }
   h1 { font-size: clamp(2.6rem, 8vw, 3.8rem); max-width: 16ch; }
-  .architecture { max-width: 23rem; margin: .25rem auto 0; }
   .workflow { margin-top: 2.5rem; }
   .section-row { grid-template-columns: 1fr; gap: 1.35rem; }
 }
@@ -132,3 +129,17 @@ h1 span { color: var(--color-sage); }
 .project-board li:has(a):is(:hover,:focus-within) { box-shadow: inset 0 0 0 1px var(--color-pine); }
 .project-board .project-tech { font: .82rem/1.7 var(--font-mono); color: var(--color-sage); margin-top: 1rem; }
 .card-circuit { display: block; width: 8rem; height: auto; margin: 1.25rem 0 .8rem; color: var(--color-sage); }
+
+.hero-introduction { position: relative; }
+.hero-geometry {
+  position: absolute;
+  right: 1%;
+  top: 0;
+  width: min(34%, 27rem);
+  height: 100%;
+  pointer-events: none;
+  opacity: .7;
+}
+@media (max-width: 1050px) {
+  .hero-geometry { display: none; }
+}

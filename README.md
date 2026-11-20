@@ -1,6 +1,6 @@
 # Awab Zemzemi · Engineering portfolio
 
-A single-page portfolio built with the Next.js App Router, TypeScript, Tailwind CSS, Motion, and Lucide. The homepage is prerendered at build time. Geist Sans and Geist Mono are served locally. The layered architecture illustration is an inline vector diagram.
+A single-page portfolio built with the Next.js App Router, TypeScript, Tailwind CSS, Motion, and Lucide. The homepage is prerendered at build time. Geist Sans and Geist Mono are served locally.
 
 ## Run locally
 
@@ -30,7 +30,6 @@ src/
     globals.css            Design tokens, layouts, and responsive styles
     icon.svg               Portfolio mark
   components/
-    architecture.tsx       Layered system diagram
     brand.tsx              Name and board mark
     content-sections.tsx   About, project board, timeline, and contact
     entrance.tsx           Reduced-motion-aware hero entrance
