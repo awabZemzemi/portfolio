@@ -1,0 +1,189 @@
+.game {
+  width: 100%;
+  max-width: 18.5rem;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+.heading h2 {
+  color: var(--color-paper);
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.reset,
+.retry {
+  min-height: 44px;
+  color: var(--color-secondary);
+  cursor: pointer;
+  font-size: .82rem;
+  text-decoration: underline;
+  text-decoration-color: var(--color-pine);
+  text-underline-offset: .28em;
+}
+
+.reset {
+  flex-shrink: 0;
+}
+
+.reset:hover,
+.retry:hover {
+  color: var(--color-paper);
+  text-decoration-color: var(--color-gold);
+}
+
+.feedback {
+  margin-top: .55rem;
+}
+
+.subtitle,
+.status {
+  color: var(--color-secondary);
+  font-size: .84rem;
+  line-height: 1.55;
+}
+
+.subtitle {
+  margin-bottom: .65rem;
+  text-wrap: pretty;
+}
+
+.promotion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem .55rem;
+  margin-top: .5rem;
+}
+
+.promotion button {
+  min-height: 44px;
+  padding: .25rem .4rem;
+  border: 1px solid var(--color-edge);
+  color: var(--color-paper);
+  cursor: pointer;
+  font-size: .8rem;
+}
+
+.promotion button:hover {
+  border-color: var(--color-gold);
+  background: var(--color-inset);
+}
+
+.board {
+  width: 100%;
+  border: 1px solid var(--color-edge);
+  user-select: none;
+}
+
+.boardRow {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
+.square {
+  position: relative;
+  display: grid;
+  width: 100%;
+  aspect-ratio: 1;
+  place-items: center;
+  color: var(--color-paper);
+  background: #3b5042;
+  cursor: pointer;
+}
+
+.square[data-tone="dark"] {
+  background: var(--color-inset);
+}
+
+.square[aria-disabled="true"] {
+  cursor: default;
+}
+
+.square[data-last] {
+  box-shadow: inset 0 0 0 1px #a98c62;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .square[data-bot-arrival]::after {
+    position: absolute;
+    inset: 0;
+    background: var(--color-gold);
+    content: "";
+    pointer-events: none;
+    animation: bot-arrival .24s ease-out both;
+  }
+}
+
+@keyframes bot-arrival {
+  from { opacity: .2; }
+  to { opacity: 0; }
+}
+
+.square[data-tone][data-check] {
+  background: #734a3d;
+}
+
+.square[data-selected] {
+  box-shadow: inset 0 0 0 2px var(--color-gold);
+}
+
+.square:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--color-paper);
+  outline-offset: -5px;
+}
+
+.piece {
+  width: 62%;
+  height: 62%;
+  pointer-events: none;
+}
+
+.piece[data-side="w"] {
+  color: var(--color-paper);
+  fill: #f3efe51a;
+}
+
+.piece[data-side="b"] {
+  color: var(--color-sage);
+  fill: var(--color-canvas);
+}
+
+.rank,
+.file {
+  position: absolute;
+  pointer-events: none;
+  font: 500 .56rem/1 var(--font-mono), monospace;
+}
+
+.rank { top: 3px; left: 3px; }
+.file { right: 3px; bottom: 3px; }
+
+.destination,
+.capture {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.destination {
+  width: 26%;
+  aspect-ratio: 1;
+  background: var(--color-gold);
+}
+
+.capture {
+  inset: 9%;
+  border: 2px solid var(--color-gold);
+}
+
+@media (max-width: 760px) {
+  .game {
+    max-width: 17rem;
+  }
+}

@@ -68,21 +68,21 @@ code { font-family: var(--font-mono), monospace; }
 h1, h2 { font-family: var(--font-display), var(--font-sans), sans-serif; }
 h1 { font-size: clamp(2.45rem, 5.2vw, 4.55rem); line-height: 1.02; letter-spacing: -.055em; font-weight: 600; text-wrap: balance; }
 
-.hero { position: relative; padding-block: clamp(3.7rem, 7.1vw, 6.6rem) clamp(3rem, 5vw, 4.25rem); }
-.hero-content { position: relative; z-index: 1; max-width: 52rem; }
-.hero-geometry { position: absolute; right: 0; top: 50%; width: min(32vw, 400px); transform: translateY(-50%); pointer-events: none; opacity: .75; }
-@media (prefers-reduced-motion: no-preference) {
-  .hero-geometry { animation: hero-board-enter .4s ease-out both; }
-  .nav-links a::after { transition: transform .18s ease-out; }
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(13.5rem, 25vw, 18.5rem);
+  align-items: center;
+  gap: clamp(1.75rem, 4vw, 4rem);
+  padding-block: clamp(3.7rem, 6vw, 5.8rem) clamp(3rem, 5vw, 4.25rem);
 }
-@keyframes hero-board-enter {
-  from { opacity: 0; }
-  to { opacity: .75; }
+.hero-content { max-width: 52rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .nav-links a::after { transition: transform .18s ease-out; }
 }
 .hero-eyebrow { display: flex; align-items: center; gap: .7rem; color: var(--color-sage); }
 .hero-eyebrow span { width: 1.5rem; height: 1px; flex-shrink: 0; background: var(--color-gold); }
 .hero h1 {
-  font-size: clamp(3.25rem, 8.3vw, 7.45rem);
+  font-size: clamp(3.25rem, 7.5vw, 7.45rem);
   margin-block: .95rem 1.4rem;
   text-wrap: initial;
   overflow-wrap: break-word;
@@ -149,13 +149,11 @@ h1 { font-size: clamp(2.45rem, 5.2vw, 4.55rem); line-height: 1.02; letter-spacin
   .nav-links.is-open { display: flex; position: absolute; top: 100%; inset-inline: 0; padding: .5rem var(--page-gutter) 1rem; height: auto; flex-direction: column; gap: 0; background: var(--color-canvas); border-bottom: 1px solid var(--color-edge); }
   .nav-links a, .nav-disabled { min-height: 44px; }
   .nav-links a[aria-current]::after { left: auto; right: .5rem; bottom: 50%; }
+  .hero { grid-template-columns: minmax(0, 1fr); }
   .hero h1 { font-size: clamp(3.35rem, 10vw, 5.4rem); margin-block: .75rem 1rem; }
   .section-row { grid-template-columns: 1fr; gap: 1.2rem; }
   .timeline-header { grid-template-columns: 1fr; }
   .timeline-meta { align-items: flex-start; }
-}
-@media (max-width: 1100px) {
-  .hero-geometry { display: none; }
 }
 @media (max-width: 570px) {
   .hero-eyebrow span { width: 1rem; }
