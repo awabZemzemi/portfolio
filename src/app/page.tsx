@@ -2,7 +2,7 @@ import { statSync } from "node:fs";
 import path from "node:path";
 import { ArrowRight, Download, Mail } from "lucide-react";
 import { Brand } from "@/components/brand";
-import { HeroGeometry } from "@/components/hero-geometry";
+import ChessGame from "@/components/chess/chess-game";
 import { About, Contact, ExperienceTimeline, ProjectBoard } from "@/components/content-sections";
 import { Navigation } from "@/components/navigation";
 import { education, experience, links, profile, projects } from "@/config/portfolio";
@@ -17,7 +17,6 @@ export default function Home() {
       <Navigation hasProjects={projects.length > 0} hasExperience={hasBackground} />
       <main id="main" className="shell" tabIndex={-1}>
         <section id="home" data-nav-section aria-labelledby="hero-title" className="hero">
-          <HeroGeometry />
           <div className="hero-content">
             <p className="hero-eyebrow mono-label"><span aria-hidden="true" />{profile.eyebrow}</p>
             <h1 id="hero-title">{profile.name}</h1>
@@ -28,6 +27,7 @@ export default function Home() {
               {links.email && <a className="editorial-link" href={`mailto:${links.email}`}>Email me<Mail size={16} aria-hidden="true" /></a>}
             </div>
           </div>
+          <ChessGame />
         </section>
         <ProjectBoard items={projects} />
         <ExperienceTimeline jobs={experience} studies={education} />
